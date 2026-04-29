@@ -1,0 +1,51 @@
+{
+  "w-real-estate": {
+    "brand_id": "w-real-estate",
+    "agent": "Amanda Frizell, Realtor\u00ae",
+    "brokerage_name": "W Real Estate, LLC",
+    "brokerage_phone": "601-499-0952",
+    "agent_cell": "601-966-2798",
+    "tagline": "Everything I Touch Turns to Sold!",
+    "email": "amandafrizell4@gmail.com",
+    "website": "wrealestatellc.com",
+    "primary_colors": ["burgundy", "black"],
+    "accent_colors": ["cream", "gold"],
+    "tone": ["luxury", "editorial", "polished"],
+    "content_pillars": ["authority", "education", "myth-busting", "market-questions"],
+    "service_area": "All Mississippi, focus on Jackson metro and Gulf Coast",
+    "price_tier": "mid-market to luxury",
+    "transaction_focus": "seller heavy",
+    "social_handles": {
+      "instagram": "TBD",
+      "tiktok": "TBD",
+      "facebook": "TBD"
+    },
+    "voice_id_elevenlabs": null,
+    "compliance_required": "Mississippi Rule 3.3 — every piece of content must prominently include brokerage name (W Real Estate, LLC) and brokerage phone (601-499-0952). REALTOR\u00ae designation satisfies licensee status disclosure."
+  },
+  "alpha-insurance": {
+    "brand_id": "alpha-insurance",
+    "business_name": "Alpha Insurance",
+    "owner": "Amanda Frizell",
+    "tagline": "Everything you protect, we cover.",
+    "address": "5140 Galaxie Dr, Suite 201, Jackson MS",
+    "phone": "601-981-2911",
+    "email": "alphainsurancems@comcast.net",
+    "website": "consulting-stack.github.io/alpha-insurance-agency",
+    "lines_of_business": ["auto", "home", "life", "burial"],
+    "primary_colors": ["maroon", "black", "white"],
+    "accent_colors": ["grey"],
+    "tone": ["trustworthy", "local", "protective"],
+    "content_pillars": ["cost-pain", "protection", "local-trust"],
+    "service_area": "Mississippi statewide",
+    "customer_profile": "all",
+    "carriers_in_content": "allowed",
+    "social_handles": {
+      "instagram": "TBD",
+      "tiktok": "TBD",
+      "facebook": "TBD"
+    },
+    "voice_id_elevenlabs": null,
+    "voice_strategy_note": "Same voice clone as W Real Estate when activated in Phase 3."
+  }
+}

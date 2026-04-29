@@ -1,0 +1,67 @@
+# Python virtual environment
+venv/
+.venv/
+
+# Environment variables — NEVER commit API keys
+.env
+config/.env
+
+# Generated content output (large, machine-generated)
+/scripts/
+/renders/
+
+# Input videos — not tracked in git
+/competitor-videos/*.mp4
+/competitor-videos/*.mov
+/competitor-videos/*.avi
+
+# Pipeline logs and intermediate files
+/logs/
+!/logs/.gitkeep
+
+# Extracted frames and transcripts
+/logs/frames/
+/logs/transcripts/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Media files (general)
+*.mp4
+*.mp3
+*.mov
+*.avi
+*.wav
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Exception: keep gitkeep files
+!.gitkeep
+
+# Node.js (Phase 2 — Remotion)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build output
+dist/
+build/
+*.egg-info/

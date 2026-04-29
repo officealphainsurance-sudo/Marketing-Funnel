@@ -1,0 +1,7 @@
+anthropic
+openai
+python-dotenv
+pytesseract
+Pillow
+ffmpeg-python
+requests
