@@ -1,0 +1,70 @@
+{
+  "w-real-estate": {
+    "hook_patterns": {
+      "direct-address": {
+        "weight": 2.5,
+        "frequency": 1,
+        "avg_view_multiplier": 2.5,
+        "last_seen": "2026-04-30T12:04:12.430801"
+      }
+    },
+    "top_emotional_triggers": {
+      "aspiration": {
+        "weight": 2.5,
+        "frequency": 1,
+        "avg_view_multiplier": 2.5
+      },
+      "relief": {
+        "weight": 2.5,
+        "frequency": 1,
+        "avg_view_multiplier": 2.5
+      },
+      "empowerment": {
+        "weight": 2.5,
+        "frequency": 1,
+        "avg_view_multiplier": 2.5
+      },
+      "belonging": {
+        "weight": 2.5,
+        "frequency": 1,
+        "avg_view_multiplier": 2.5
+      }
+    },
+    "top_pain_points": {
+      "cold calling and door knocking aren't fun": 1,
+      "difficulty generating leads": 1,
+      "need for more enjoyable prospecting methods": 1,
+      "lack of conversation opportunities": 1
+    },
+    "top_standout_techniques": [
+      {
+        "technique": "Using identity-based conditional framing ('if you're someone who...') to help viewers self-select into specific actionable advice categories",
+        "view_multiplier": 2.5
+      }
+    ],
+    "top_key_claims": [
+      {
+        "claim": "Lead generation through hobbies is an effective and enjoyable alternative to cold calling and door knocking",
+        "view_multiplier": 2.5
+      }
+    ],
+    "videos_analyzed": 1,
+    "last_updated": "2026-04-30T12:04:12.431013"
+  },
+  "alpha-insurance": {
+    "hook_patterns": {},
+    "top_emotional_triggers": {},
+    "top_pain_points": {},
+    "top_standout_techniques": [],
+    "top_key_claims": [],
+    "videos_analyzed": 0,
+    "last_updated": ""
+  },
+  "meta": {
+    "total_videos_analyzed": 1,
+    "brain_version": "2.1",
+    "created_at": "",
+    "last_updated": "2026-04-30T12:04:12.431163",
+    "note": "This file is auto-updated after every pipeline run. Commit to GitHub to sync across devices. Do NOT gitignore."
+  }
+}
