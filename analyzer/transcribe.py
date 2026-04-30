@@ -65,12 +65,13 @@ def transcribe_single(client: openai.OpenAI, audio_path: Path, logger: logging.L
     for attempt in range(3):
         try:
             with open(audio_path, "rb") as f:
-                response = client.audio.transcriptions.create(
-                    model="whisper-1",
-                    file=f,
-                    response_format="verbose_json",
-                    timestamp_granularities=["word"],
-                )
+                audio_bytes = f.read()
+            response = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=("audio.mp3", audio_bytes, "audio/mpeg"),
+                response_format="verbose_json",
+                timestamp_granularities=["word"],
+            )
             elapsed = time.time() - start
             logger.info(f"Transcription complete in {elapsed:.1f}s")
             return response.model_dump() if hasattr(response, "model_dump") else dict(response)
