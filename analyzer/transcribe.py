@@ -9,6 +9,7 @@ import json
 import math
 import logging
 import time
+from io import BytesIO
 from pathlib import Path
 from datetime import datetime
 
@@ -16,8 +17,16 @@ from dotenv import load_dotenv
 import openai
 
 ROOT = Path(__file__).parent.parent
-LOGS_DIR = ROOT / "logs"
-TRANSCRIPTS_DIR = ROOT / "logs" / "transcripts"
+
+if sys.platform == 'darwin':
+    LOGS_DIR = Path('/tmp/contentengine/logs')
+    TRANSCRIPTS_DIR = Path('/tmp/contentengine/logs/transcripts')
+else:
+    LOGS_DIR = ROOT / "logs"
+    TRANSCRIPTS_DIR = ROOT / "logs" / "transcripts"
+
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+TRANSCRIPTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # Whisper API pricing: $0.006 per minute
 WHISPER_COST_PER_MINUTE = 0.006
@@ -59,16 +68,19 @@ def estimate_cost(duration_seconds: float) -> float:
 
 def transcribe_single(client: openai.OpenAI, audio_path: Path, logger: logging.Logger) -> dict:
     """Transcribe a single audio file (must be under 25MB)."""
-    logger.info(f"Sending to Whisper API: {audio_path.name}")
+    logger.info("Sending to Whisper API")
     start = time.time()
+
+    audio_bytes = open(audio_path, "rb").read()
+    buf = BytesIO(audio_bytes)
+    buf.name = "audio.mp3"
 
     for attempt in range(3):
         try:
-            with open(audio_path, "rb") as f:
-                audio_bytes = f.read()
+            buf.seek(0)
             response = client.audio.transcriptions.create(
                 model="whisper-1",
-                file=("audio.mp3", audio_bytes, "audio/mpeg"),
+                file=buf,
                 response_format="verbose_json",
                 timestamp_granularities=["word"],
             )

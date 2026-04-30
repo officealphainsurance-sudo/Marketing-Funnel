@@ -18,7 +18,13 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).parent.parent
-LOGS_DIR = ROOT / "logs"
+
+if sys.platform == 'darwin':
+    LOGS_DIR = Path('/tmp/contentengine/logs')
+else:
+    LOGS_DIR = ROOT / "logs"
+
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 load_dotenv(ROOT / "config" / ".env")
 

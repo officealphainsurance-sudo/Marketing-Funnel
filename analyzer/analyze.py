@@ -14,7 +14,14 @@ from dotenv import load_dotenv
 import anthropic
 
 ROOT = Path(__file__).parent.parent
-LOGS_DIR = ROOT / "logs"
+
+if sys.platform == 'darwin':
+    LOGS_DIR = Path('/tmp/contentengine/logs')
+else:
+    LOGS_DIR = ROOT / "logs"
+
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
 SCRIPTS_DIR = ROOT / "scripts"
 
 # claude-sonnet-4-5 — specified model for all Anthropic calls

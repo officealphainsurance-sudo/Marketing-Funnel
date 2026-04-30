@@ -15,8 +15,16 @@ import ffmpeg
 
 # Project root relative to this file
 ROOT = Path(__file__).parent.parent
-LOGS_DIR = ROOT / "logs"
-FRAMES_DIR = ROOT / "logs" / "frames"
+
+if sys.platform == 'darwin':
+    LOGS_DIR = Path('/tmp/contentengine/logs')
+    FRAMES_DIR = Path('/tmp/contentengine/logs/frames')
+else:
+    LOGS_DIR = ROOT / "logs"
+    FRAMES_DIR = ROOT / "logs" / "frames"
+
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+FRAMES_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def setup_logger(video_id: str) -> logging.Logger:

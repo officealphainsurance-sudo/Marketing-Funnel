@@ -14,7 +14,16 @@ from difflib import SequenceMatcher
 from PIL import Image
 
 ROOT = Path(__file__).parent.parent
-LOGS_DIR = ROOT / "logs"
+
+if sys.platform == 'darwin':
+    LOGS_DIR = Path('/tmp/contentengine/logs')
+    FRAMES_DIR = Path('/tmp/contentengine/logs/frames')
+else:
+    LOGS_DIR = ROOT / "logs"
+    FRAMES_DIR = ROOT / "logs" / "frames"
+
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+FRAMES_DIR.mkdir(parents=True, exist_ok=True)
 
 TESSERACT_INSTALL_URL = "https://github.com/UB-Mannheim/tesseract/wiki"
 
@@ -39,7 +48,6 @@ def check_tesseract() -> None:
 
 
 def get_logger(video_id: str) -> logging.Logger:
-    LOGS_DIR.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     log_file = LOGS_DIR / f"ocr-{timestamp}.log"
     logger = logging.getLogger(f"ocr.{video_id}")
