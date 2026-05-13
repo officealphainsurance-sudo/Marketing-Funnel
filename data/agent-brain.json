@@ -5,16 +5,21 @@
         "weight": 2.5,
         "frequency": 1,
         "avg_view_multiplier": 2.5,
-        "last_seen": "2026-04-30T12:04:12.430801"
+        "last_seen": "2026-05-13T12:47:56.171188"
       }
     },
     "top_emotional_triggers": {
+      "relief": {
+        "weight": 2.5,
+        "frequency": 1,
+        "avg_view_multiplier": 2.5
+      },
       "aspiration": {
         "weight": 2.5,
         "frequency": 1,
         "avg_view_multiplier": 2.5
       },
-      "relief": {
+      "confidence": {
         "weight": 2.5,
         "frequency": 1,
         "avg_view_multiplier": 2.5
@@ -23,33 +28,28 @@
         "weight": 2.5,
         "frequency": 1,
         "avg_view_multiplier": 2.5
-      },
-      "belonging": {
-        "weight": 2.5,
-        "frequency": 1,
-        "avg_view_multiplier": 2.5
       }
     },
     "top_pain_points": {
-      "cold calling and door knocking aren't fun": 1,
-      "difficulty generating leads": 1,
-      "need for more enjoyable prospecting methods": 1,
-      "lack of conversation opportunities": 1
+      "cold calling is unpleasant": 1,
+      "door knocking isn't fun": 1,
+      "traditional lead generation methods are uncomfortable": 1,
+      "finding enjoyable ways to network": 1
     },
     "top_standout_techniques": [
       {
-        "technique": "Using identity-based conditional framing ('if you're someone who...') to help viewers self-select into specific actionable advice categories",
+        "technique": "Categorical list delivery with personal relatability moments that build trust while providing actionable options",
         "view_multiplier": 2.5
       }
     ],
     "top_key_claims": [
       {
-        "claim": "Lead generation through hobbies is an effective and enjoyable alternative to cold calling and door knocking",
+        "claim": "Lead generation can happen through hobbies instead of uncomfortable cold outreach",
         "view_multiplier": 2.5
       }
     ],
     "videos_analyzed": 1,
-    "last_updated": "2026-04-30T12:04:12.431013"
+    "last_updated": "2026-05-13T12:47:56.171458"
   },
   "alpha-insurance": {
     "hook_patterns": {},
@@ -64,7 +64,7 @@
     "total_videos_analyzed": 1,
     "brain_version": "2.1",
     "created_at": "",
-    "last_updated": "2026-04-30T12:04:12.431163",
+    "last_updated": "2026-05-13T12:47:56.171625",
     "note": "This file is auto-updated after every pipeline run. Commit to GitHub to sync across devices. Do NOT gitignore."
   }
 }
