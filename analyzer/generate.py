@@ -1,6 +1,11 @@
 """
-generate.py — Content generation pipeline
-Reads analysis JSON + brand config, generates scripts via Claude API.
+generate.py v2.1 — Content generation pipeline (Brain-Aware)
+Reads analysis JSON + brand config + agent brain context.
+Generates scripts via Claude API weighted toward proven patterns.
+
+CHANGELOG v2.1:
+- FIXED: Broken f-string log line that was printing literal {brain_context["videos_analyzed"]}
+  instead of interpolating the value.
 """
 
 import os
@@ -74,12 +79,64 @@ def estimate_token_cost(input_tokens: int, output_tokens: int) -> float:
     return round((input_tokens / 1000 * INPUT_COST_PER_1K) + (output_tokens / 1000 * OUTPUT_COST_PER_1K), 6)
 
 
-def build_w_real_estate_prompt(brand: dict, analysis: dict) -> str:
+def build_brain_section(brain_context: dict) -> str:
+    if not brain_context or not brain_context.get("has_learned_patterns"):
+        return ""
+
+    top_hooks = brain_context.get("top_performing_hook_types", [])
+    top_triggers = brain_context.get("top_emotional_triggers", [])
+    pain_points = brain_context.get("most_resonant_pain_points", [])
+    techniques = brain_context.get("proven_standout_techniques", [])
+    claims = brain_context.get("top_key_claims", [])
+    videos_analyzed = brain_context.get("videos_analyzed", 0)
+
+    lines = [
+        f"\nAGENT BRAIN INTELLIGENCE ({videos_analyzed} videos analyzed):",
+        "The following patterns have PROVEN performance across analyzed competitor content.",
+        "Weight your hook variations and script structure toward these patterns:\n",
+    ]
+
+    if top_hooks:
+        lines.append("TOP PERFORMING HOOK TYPES (ranked by avg view performance):")
+        for i, h in enumerate(top_hooks, 1):
+            lines.append(f"  {i}. {h['hook_type']} (avg view multiplier: {h['weight']:.2f}x, seen {h['frequency']}x)")
+
+    if top_triggers:
+        lines.append(f"\nMOST EFFECTIVE EMOTIONAL TRIGGERS: {', '.join(top_triggers)}")
+
+    if pain_points:
+        lines.append(f"\nHIGHEST RESONANCE PAIN POINTS:")
+        for pp in pain_points[:3]:
+            lines.append(f"  - {pp}")
+
+    if techniques:
+        lines.append(f"\nPROVEN STANDOUT TECHNIQUES:")
+        for t in techniques:
+            lines.append(f"  - {t}")
+
+    if claims:
+        lines.append(f"\nTOP PERFORMING CLAIM ANGLES:")
+        for c in claims:
+            lines.append(f"  - {c}")
+
+    lines.append(
+        "\nINSTRUCTION: Generate Hook Variation 1 using the #1 ranked hook type above. "
+        "Hook Variation 2 using the #2 ranked type. "
+        "Hook Variation 3 using your creative judgment based on the current video analysis. "
+        "Label each variation with its hook_type."
+    )
+
+    return "\n".join(lines)
+
+
+def build_w_real_estate_prompt(brand: dict, analysis: dict, brain_context: dict = None) -> str:
     hook = analysis.get("hook_structure", {})
     pacing = analysis.get("pacing", {})
     structure = analysis.get("content_structure", {})
     psych = analysis.get("psychological_hooks", {})
     production = analysis.get("production_notes", {})
+
+    brain_section = build_brain_section(brain_context or {})
 
     return f"""You are a content strategist generating short-form real estate video scripts for Amanda Frizell, Realtor® with W Real Estate, LLC — a luxury real estate brand in Mississippi.
 
@@ -101,7 +158,7 @@ Every script and caption MUST prominently include:
 2. Brokerage phone: "601-499-0952"
 Place these in the CLOSING CTA frame and in caption text. No exceptions.
 
-COMPETITOR VIDEO ANALYSIS (what you are modeling):
+COMPETITOR VIDEO ANALYSIS (what you are modeling from this specific video):
 - Hook type: {hook.get('hook_type', 'unknown')}
 - Hook opening: "{hook.get('first_3_seconds_transcript', '')}"
 - Pattern interrupt: {hook.get('pattern_interrupt', 'none detected')}
@@ -111,6 +168,7 @@ COMPETITOR VIDEO ANALYSIS (what you are modeling):
 - Key claim: {analysis.get('messaging_patterns', {}).get('key_claim', 'none')}
 - Structure: {json.dumps([s.get('label') for s in structure.get('segments', [])], indent=None)}
 - Video style: {production.get('video_style', 'unknown')}
+{brain_section}
 
 Generate the following and return as a single JSON object:
 
@@ -121,20 +179,23 @@ Generate the following and return as a single JSON object:
   "hook_variations": [
     {{
       "variation": 1,
-      "hook_text": "<3-second opening line — punchy, in Amanda's luxury voice>",
-      "hook_type": "<type>",
+      "hook_text": "<3-second opening line — use top brain hook type if brain data available>",
+      "hook_type": "<type from brain ranking or current analysis>",
+      "brain_weighted": true,
       "visual_direction": "<what should be shown in these 3 seconds>"
     }},
     {{
       "variation": 2,
-      "hook_text": "<alternative hook using different emotional trigger>",
+      "hook_text": "<alternative hook using second brain hook type or different emotional trigger>",
       "hook_type": "<type>",
+      "brain_weighted": true,
       "visual_direction": "<visual direction>"
     }},
     {{
       "variation": 3,
-      "hook_text": "<third hook using a myth-busting or question format>",
+      "hook_text": "<creative hook based on current video analysis — your judgment>",
       "hook_type": "<type>",
+      "brain_weighted": false,
       "visual_direction": "<visual direction>"
     }}
   ],
@@ -194,12 +255,14 @@ Generate the following and return as a single JSON object:
 }}"""
 
 
-def build_alpha_insurance_prompt(brand: dict, analysis: dict) -> str:
+def build_alpha_insurance_prompt(brand: dict, analysis: dict, brain_context: dict = None) -> str:
     hook = analysis.get("hook_structure", {})
     pacing = analysis.get("pacing", {})
     structure = analysis.get("content_structure", {})
     psych = analysis.get("psychological_hooks", {})
     production = analysis.get("production_notes", {})
+
+    brain_section = build_brain_section(brain_context or {})
 
     return f"""You are a content strategist generating short-form insurance video scripts for Amanda Frizell, owner of Alpha Insurance — a local Mississippi insurance agency.
 
@@ -221,7 +284,7 @@ BRAND VOICE NOTES:
 - Address real cost pain points people face with insurance
 - Position Alpha Insurance as the local solution that cares
 
-COMPETITOR VIDEO ANALYSIS (what you are modeling):
+COMPETITOR VIDEO ANALYSIS (what you are modeling from this specific video):
 - Hook type: {hook.get('hook_type', 'unknown')}
 - Hook opening: "{hook.get('first_3_seconds_transcript', '')}"
 - Pattern interrupt: {hook.get('pattern_interrupt', 'none detected')}
@@ -230,6 +293,7 @@ COMPETITOR VIDEO ANALYSIS (what you are modeling):
 - Emotional triggers used: {', '.join(psych.get('emotional_triggers', []))}
 - Key claim: {analysis.get('messaging_patterns', {}).get('key_claim', 'none')}
 - Structure: {json.dumps([s.get('label') for s in structure.get('segments', [])], indent=None)}
+{brain_section}
 
 Generate the following and return as a single JSON object:
 
@@ -240,20 +304,23 @@ Generate the following and return as a single JSON object:
   "hook_variations": [
     {{
       "variation": 1,
-      "hook_text": "<3-second opener addressing a cost pain point>",
+      "hook_text": "<3-second opener — use top brain hook type if brain data available>",
       "hook_type": "<type>",
+      "brain_weighted": true,
       "visual_direction": "<what to show>"
     }},
     {{
       "variation": 2,
-      "hook_text": "<alternative hook using local/trust angle>",
+      "hook_text": "<alternative hook using second brain hook type or local/trust angle>",
       "hook_type": "<type>",
+      "brain_weighted": true,
       "visual_direction": "<what to show>"
     }},
     {{
       "variation": 3,
-      "hook_text": "<third hook using protection/fear-of-loss angle>",
+      "hook_text": "<creative hook from current video analysis — your judgment>",
       "hook_type": "<type>",
+      "brain_weighted": false,
       "visual_direction": "<what to show>"
     }}
   ],
@@ -308,11 +375,7 @@ Generate the following and return as a single JSON object:
 }}"""
 
 
-def generate(analysis_path: str | Path, brand_id: str) -> dict:
-    """
-    Main entry point.
-    Reads analysis JSON, generates brand-specific content via Claude.
-    """
+def generate(analysis_path, brand_id: str, brain_context: dict = None) -> dict:
     if brand_id not in VALID_BRANDS:
         raise ValueError(f"Brand must be one of: {VALID_BRANDS}")
 
@@ -328,17 +391,23 @@ def generate(analysis_path: str | Path, brand_id: str) -> dict:
 
     brand = load_brand(brand_id)
     logger = get_logger(video_id, brand_id)
-    logger.info(f"=== Generation Pipeline ===")
-    logger.info(f"Brand: {brand_id}")
-    logger.info(f"Video ID: {video_id}")
-    logger.info(f"Model: {CLAUDE_MODEL}")
+    logger.info(f"=== Generation Pipeline v2.1 (Brain-Aware) ===")
+    logger.info(f"Brand: {brand_id} | Video ID: {video_id} | Model: {CLAUDE_MODEL}")
+
+    # FIX v2.1: Clean log statement, no nested f-string interpolation issues.
+    brain_active = bool(brain_context and brain_context.get("has_learned_patterns"))
+    if brain_active:
+        videos_count = brain_context.get("videos_analyzed", 0)
+        logger.info(f"Brain context: ACTIVE — {videos_count} videos analyzed")
+    else:
+        logger.info("Brain context: INACTIVE — first run or no data yet")
 
     client = get_anthropic_client()
 
     if brand_id == "w-real-estate":
-        prompt = build_w_real_estate_prompt(brand, analysis)
+        prompt = build_w_real_estate_prompt(brand, analysis, brain_context)
     else:
-        prompt = build_alpha_insurance_prompt(brand, analysis)
+        prompt = build_alpha_insurance_prompt(brand, analysis, brain_context)
 
     logger.info("Sending to Claude API for content generation...")
     try:
@@ -356,10 +425,8 @@ def generate(analysis_path: str | Path, brand_id: str) -> dict:
     output_tokens = response.usage.output_tokens
     cost = estimate_token_cost(input_tokens, output_tokens)
 
-    logger.info(f"Generation complete. Tokens: {input_tokens} in / {output_tokens} out")
-    logger.info(f"Estimated cost: ${cost:.6f}")
+    logger.info(f"Generation complete. Tokens: {input_tokens} in / {output_tokens} out | Cost: ${cost:.6f}")
 
-    # Strip markdown fences if present
     if raw_content.startswith("```"):
         lines = raw_content.split("\n")
         raw_content = "\n".join(lines[1:-1]) if lines[-1].strip() == "```" else "\n".join(lines[1:])
@@ -371,9 +438,9 @@ def generate(analysis_path: str | Path, brand_id: str) -> dict:
         logger.error(f"Raw response snippet: {raw_content[:500]}")
         raise ValueError(f"Claude returned invalid JSON: {e}")
 
-    # Inject metadata
     generated["video_id"] = video_id
     generated["generated_at"] = datetime.now().isoformat()
+    generated["brain_active"] = brain_active
 
     SCRIPTS_DIR.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -385,6 +452,7 @@ def generate(analysis_path: str | Path, brand_id: str) -> dict:
         "video_id": video_id,
         "generated_at": generated["generated_at"],
         "model": CLAUDE_MODEL,
+        "brain_active": brain_active,
         "api_usage": {
             "input_tokens": input_tokens,
             "output_tokens": output_tokens,
@@ -410,5 +478,5 @@ if __name__ == "__main__":
     result = generate(sys.argv[1], sys.argv[2])
     content = result["content"]
     print(f"\nHook Variation 1: {content.get('hook_variations', [{}])[0].get('hook_text', '')}")
-    print(f"Script CTA: {content.get('full_script', {}).get('segments', [{}])[-1].get('spoken_text', '')[:150]}")
-    print(f"Output saved. Cost: ${result['api_usage']['estimated_cost_usd']:.6f}")
+    print(f"Brain active: {result['brain_active']}")
+    print(f"Cost: ${result['api_usage']['estimated_cost_usd']:.6f}")

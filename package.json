@@ -1,0 +1,31 @@
+{
+  "name": "contentengine",
+  "version": "1.0.0",
+  "description": "Programmatic content production system for two brands operated by Amanda Frizell: - **W Real Estate, LLC** — Mississippi real estate, luxury/editorial voice - **Alpha Insurance** — Mississippi independent insurance agency, local/trustworthy voice",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/officealphainsurance-sudo/Marketing-Funnel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/officealphainsurance-sudo/Marketing-Funnel/issues"
+  },
+  "homepage": "https://github.com/officealphainsurance-sudo/Marketing-Funnel#readme",
+  "dependencies": {
+    "@remotion/bundler": "^4.0.455",
+    "@remotion/cli": "^4.0.455",
+    "@remotion/renderer": "^4.0.455",
+    "@rendervid/core": "^0.1.0",
+    "@rendervid/renderer-node": "^0.1.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "remotion": "^4.0.455"
+  }
+}

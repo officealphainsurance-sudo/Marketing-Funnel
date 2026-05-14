@@ -1,0 +1,23 @@
+{
+  "filename": "youtube-unknown-2026-04-30-seller-tips-short",
+  "platform": "youtube",
+  "handle": "unknown",
+  "url": "https://www.youtube.com/shorts/IhchTjJesRA",
+  "brand_target": "w-real-estate",
+  "intake_date": "2026-04-30T11:56:10.963353",
+  "performance": {
+    "views": 83091,
+    "likes": 2887,
+    "comments": 57,
+    "title": "how to get CLIENTS as a Realtor! 👀",
+    "channel": "Carys Cachero",
+    "published_at": "2024-03-13T13:55:54Z"
+  },
+  "pipeline_status": {
+    "downloaded": true,
+    "analyzed": false,
+    "scored": false,
+    "synthesized": false,
+    "generated": false
+  }
+}

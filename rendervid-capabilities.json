@@ -1,0 +1,144 @@
+﻿{
+  "version": "0.1.0",
+  "customComponents": {},
+  "animations": {
+    "entrance": [
+      "fadeIn",
+      "fadeInUp",
+      "fadeInDown",
+      "fadeInLeft",
+      "fadeInRight",
+      "slideInUp",
+      "slideInDown",
+      "slideInLeft",
+      "slideInRight",
+      "scaleIn",
+      "zoomIn",
+      "rotateIn",
+      "bounceIn"
+    ],
+    "exit": [
+      "fadeOut",
+      "fadeOutUp",
+      "fadeOutDown",
+      "scaleOut",
+      "zoomOut"
+    ],
+    "emphasis": [
+      "pulse",
+      "shake",
+      "bounce",
+      "spin",
+      "heartbeat",
+      "float"
+    ]
+  },
+  "easings": [
+    "linear",
+    "easeInQuad",
+    "easeOutQuad",
+    "easeInOutQuad",
+    "easeInCubic",
+    "easeOutCubic",
+    "easeInOutCubic",
+    "easeInQuart",
+    "easeOutQuart",
+    "easeInOutQuart",
+    "easeInQuint",
+    "easeOutQuint",
+    "easeInOutQuint",
+    "easeInSine",
+    "easeOutSine",
+    "easeInOutSine",
+    "easeInExpo",
+    "easeOutExpo",
+    "easeInOutExpo",
+    "easeInCirc",
+    "easeOutCirc",
+    "easeInOutCirc",
+    "easeInBack",
+    "easeOutBack",
+    "easeInOutBack",
+    "easeInElastic",
+    "easeOutElastic",
+    "easeInOutElastic",
+    "easeInBounce",
+    "easeOutBounce",
+    "easeInOutBounce"
+  ],
+  "blendModes": [
+    "normal",
+    "multiply",
+    "screen",
+    "overlay",
+    "darken",
+    "lighten",
+    "color-dodge",
+    "color-burn",
+    "hard-light",
+    "soft-light",
+    "difference",
+    "exclusion"
+  ],
+  "filters": [
+    "blur",
+    "brightness",
+    "contrast",
+    "grayscale",
+    "hue-rotate",
+    "invert",
+    "opacity",
+    "saturate",
+    "sepia",
+    "drop-shadow"
+  ],
+  "fonts": {
+    "builtin": [
+      "Inter",
+      "Roboto",
+      "Open Sans",
+      "Lato",
+      "Montserrat"
+    ],
+    "googleFonts": true,
+    "customFonts": true
+  },
+  "output": {
+    "video": {
+      "formats": [
+        "mp4",
+        "webm",
+        "mov",
+        "gif"
+      ],
+      "codecs": [
+        "h264",
+        "h265",
+        "vp8",
+        "vp9",
+        "av1",
+        "prores"
+      ],
+      "maxWidth": 7680,
+      "maxHeight": 4320,
+      "maxDuration": 3600,
+      "maxFps": 120
+    },
+    "image": {
+      "formats": [
+        "png",
+        "jpeg",
+        "webp"
+      ],
+      "maxWidth": 7680,
+      "maxHeight": 4320
+    }
+  },
+  "runtime": "node",
+  "features": {
+    "tailwind": true,
+    "customComponents": true,
+    "webgl": false,
+    "webcodecs": false
+  }
+}

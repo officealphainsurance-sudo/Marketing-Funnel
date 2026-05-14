@@ -1,0 +1,414 @@
+{
+  "name": "w-real-estate-youtube-unknown-2026-04-30-seller-tips-s-181f69",
+  "output": {
+    "type": "video",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "duration": 20,
+    "backgroundColor": "#000000"
+  },
+  "inputs": [],
+  "fonts": {
+    "google": [
+      {
+        "family": "Inter",
+        "weights": [
+          400,
+          600,
+          700,
+          800
+        ]
+      }
+    ]
+  },
+  "composition": {
+    "scenes": [
+      {
+        "id": "hook",
+        "startFrame": 0,
+        "endFrame": 90,
+        "backgroundColor": "#0A0E27",
+        "layers": [
+          {
+            "id": "hook-broll",
+            "type": "video",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 1080,
+              "height": 1920
+            },
+            "props": {
+              "src": "D:\\ContentEngine\\broll\\youtube-unknown-2026-04-30-seller-tips-s-181f69\\scene-0s-00.mp4",
+              "objectFit": "cover",
+              "startFrom": 0,
+              "volume": 0,
+              "loop": true
+            }
+          },
+          {
+            "id": "hook-overlay",
+            "type": "shape",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 1080,
+              "height": 1920
+            },
+            "props": {
+              "type": "rectangle",
+              "fill": "rgba(0,0,0,0.45)",
+              "borderRadius": 0
+            }
+          },
+          {
+            "id": "hook-text",
+            "type": "text",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 980,
+              "height": 1200
+            },
+            "props": {
+              "text": "To all my Mississippi sellers who feel like selling is stressful—",
+              "fontSize": 64,
+              "fontWeight": "700",
+              "color": "#FFFFFF",
+              "textAlign": "center",
+              "lineHeight": 1.5,
+              "fontFamily": "Inter",
+              "textShadow": "0px 2px 8px rgba(0,0,0,0.8)"
+            },
+            "animations": [
+              {
+                "type": "entrance",
+                "effect": "zoomIn",
+                "duration": 25,
+                "delay": 0,
+                "easing": "easeOutBack"
+              },
+              {
+                "type": "exit",
+                "effect": "fadeOut",
+                "duration": 15,
+                "easing": "easeInOutCubic"
+              }
+            ]
+          }
+        ],
+        "transition": {
+          "type": "fade",
+          "duration": 12
+        }
+      },
+      {
+        "id": "problem",
+        "startFrame": 90,
+        "endFrame": 240,
+        "backgroundColor": "#1A1A2E",
+        "layers": [
+          {
+            "id": "problem-broll",
+            "type": "video",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 1080,
+              "height": 1920
+            },
+            "props": {
+              "src": "D:\\ContentEngine\\broll\\youtube-unknown-2026-04-30-seller-tips-s-181f69\\scene-3s-01.mp4",
+              "objectFit": "cover",
+              "startFrom": 0,
+              "volume": 0,
+              "loop": true
+            }
+          },
+          {
+            "id": "problem-overlay",
+            "type": "shape",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 1080,
+              "height": 1920
+            },
+            "props": {
+              "type": "rectangle",
+              "fill": "rgba(0,0,0,0.45)",
+              "borderRadius": 0
+            }
+          },
+          {
+            "id": "problem-text",
+            "type": "text",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 980,
+              "height": 1200
+            },
+            "props": {
+              "text": "Most agents make you juggle showings, staging stress, and endless uncertainty. It doesn't have to be that way.",
+              "fontSize": 64,
+              "fontWeight": "700",
+              "color": "#FFFFFF",
+              "textAlign": "center",
+              "lineHeight": 1.5,
+              "fontFamily": "Inter",
+              "textShadow": "0px 2px 8px rgba(0,0,0,0.8)"
+            },
+            "animations": [
+              {
+                "type": "entrance",
+                "effect": "slideInLeft",
+                "duration": 20,
+                "delay": 0,
+                "easing": "easeOutCubic"
+              },
+              {
+                "type": "exit",
+                "effect": "fadeOutDown",
+                "duration": 15,
+                "easing": "easeInOutCubic"
+              }
+            ]
+          }
+        ],
+        "transition": {
+          "type": "slideLeft",
+          "duration": 12
+        }
+      },
+      {
+        "id": "solution",
+        "startFrame": 240,
+        "endFrame": 480,
+        "backgroundColor": "#16213E",
+        "layers": [
+          {
+            "id": "solution-broll",
+            "type": "video",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 1080,
+              "height": 1920
+            },
+            "props": {
+              "src": "D:\\ContentEngine\\broll\\youtube-unknown-2026-04-30-seller-tips-s-181f69\\scene-8s-02.mp4",
+              "objectFit": "cover",
+              "startFrom": 0,
+              "volume": 0,
+              "loop": true
+            }
+          },
+          {
+            "id": "solution-overlay",
+            "type": "shape",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 1080,
+              "height": 1920
+            },
+            "props": {
+              "type": "rectangle",
+              "fill": "rgba(0,0,0,0.45)",
+              "borderRadius": 0
+            }
+          },
+          {
+            "id": "solution-text",
+            "type": "text",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 980,
+              "height": 1200
+            },
+            "props": {
+              "text": "If you're someone who values expert guidance, white-glove service, and a proven strategy that gets results—that's exactly what I deliver. Everything I touch turns to sold.",
+              "fontSize": 64,
+              "fontWeight": "700",
+              "color": "#FFFFFF",
+              "textAlign": "center",
+              "lineHeight": 1.5,
+              "fontFamily": "Inter",
+              "textShadow": "0px 2px 8px rgba(0,0,0,0.8)"
+            },
+            "animations": [
+              {
+                "type": "entrance",
+                "effect": "fadeInUp",
+                "duration": 30,
+                "delay": 0,
+                "easing": "easeOutElastic"
+              },
+              {
+                "type": "exit",
+                "effect": "fadeOut",
+                "duration": 15,
+                "easing": "easeInOutCubic"
+              }
+            ]
+          }
+        ],
+        "transition": {
+          "type": "fade",
+          "duration": 15
+        }
+      },
+      {
+        "id": "cta",
+        "startFrame": 480,
+        "endFrame": 600,
+        "backgroundColor": "#0F3460",
+        "layers": [
+          {
+            "id": "cta-broll",
+            "type": "video",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 1080,
+              "height": 1920
+            },
+            "props": {
+              "src": "D:\\ContentEngine\\broll\\youtube-unknown-2026-04-30-seller-tips-s-181f69\\scene-16s-03.mp4",
+              "objectFit": "cover",
+              "startFrom": 0,
+              "volume": 0,
+              "loop": true
+            }
+          },
+          {
+            "id": "cta-overlay",
+            "type": "shape",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 1080,
+              "height": 1920
+            },
+            "props": {
+              "type": "rectangle",
+              "fill": "rgba(0,0,0,0.45)",
+              "borderRadius": 0
+            }
+          },
+          {
+            "id": "cta-text",
+            "type": "text",
+            "position": {
+              "x": 540,
+              "y": 960
+            },
+            "size": {
+              "width": 980,
+              "height": 1200
+            },
+            "props": {
+              "text": "Let's get your home sold with zero stress. Call W Real Estate, LLC at 601-499-0952 today.",
+              "fontSize": 64,
+              "fontWeight": "700",
+              "color": "#FFFFFF",
+              "textAlign": "center",
+              "lineHeight": 1.5,
+              "fontFamily": "Inter",
+              "textShadow": "0px 2px 8px rgba(0,0,0,0.8)"
+            },
+            "animations": [
+              {
+                "type": "entrance",
+                "effect": "bounceIn",
+                "duration": 25,
+                "delay": 0,
+                "easing": "easeOutBounce"
+              }
+            ]
+          },
+          {
+            "id": "cta-pill-bg",
+            "type": "shape",
+            "position": {
+              "x": 540,
+              "y": 1700
+            },
+            "size": {
+              "width": 900,
+              "height": 160
+            },
+            "props": {
+              "type": "rectangle",
+              "fill": "rgba(0,0,0,0.65)",
+              "borderRadius": 16
+            },
+            "animations": [
+              {
+                "type": "entrance",
+                "effect": "fadeIn",
+                "duration": 20,
+                "delay": 10
+              }
+            ]
+          },
+          {
+            "id": "cta-lower-third",
+            "type": "text",
+            "position": {
+              "x": 540,
+              "y": 1700
+            },
+            "size": {
+              "width": 860,
+              "height": 160
+            },
+            "props": {
+              "text": "W Real Estate, LLC\n601-499-0952",
+              "fontSize": 44,
+              "fontWeight": "700",
+              "color": "#FFFFFF",
+              "textAlign": "center",
+              "lineHeight": 1.4,
+              "fontFamily": "Inter"
+            },
+            "animations": [
+              {
+                "type": "entrance",
+                "effect": "bounceIn",
+                "duration": 20,
+                "delay": 15,
+                "easing": "easeOutBounce"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
