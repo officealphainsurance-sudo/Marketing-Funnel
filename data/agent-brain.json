@@ -5,7 +5,13 @@
         "weight": 2.5,
         "frequency": 1,
         "avg_view_multiplier": 2.5,
-        "last_seen": "2026-05-13T12:47:56.171188"
+        "last_seen": "2026-05-14T14:08:39.619634"
+      },
+      "bold-claim": {
+        "weight": 1.0,
+        "frequency": 1,
+        "avg_view_multiplier": 1.0,
+        "last_seen": "2026-05-14T14:08:39.619649"
       }
     },
     "top_emotional_triggers": {
@@ -15,41 +21,68 @@
         "avg_view_multiplier": 2.5
       },
       "aspiration": {
-        "weight": 2.5,
-        "frequency": 1,
-        "avg_view_multiplier": 2.5
+        "weight": 1.75,
+        "frequency": 2,
+        "avg_view_multiplier": 1.75
       },
       "confidence": {
-        "weight": 2.5,
-        "frequency": 1,
-        "avg_view_multiplier": 2.5
+        "weight": 1.75,
+        "frequency": 2,
+        "avg_view_multiplier": 1.75
       },
       "empowerment": {
         "weight": 2.5,
         "frequency": 1,
         "avg_view_multiplier": 2.5
+      },
+      "fear": {
+        "weight": 1.0,
+        "frequency": 1,
+        "avg_view_multiplier": 1.0
+      },
+      "fomo": {
+        "weight": 1.0,
+        "frequency": 1,
+        "avg_view_multiplier": 1.0
+      },
+      "trust": {
+        "weight": 1.0,
+        "frequency": 1,
+        "avg_view_multiplier": 1.0
       }
     },
     "top_pain_points": {
       "cold calling is unpleasant": 1,
       "door knocking isn't fun": 1,
       "traditional lead generation methods are uncomfortable": 1,
-      "finding enjoyable ways to network": 1
+      "finding enjoyable ways to network": 1,
+      "hidden homeownership costs": 1,
+      "incomplete affordability calculations": 1,
+      "expensive ownership surprises": 1,
+      "lack of expert guidance": 1
     },
     "top_standout_techniques": [
       {
         "technique": "Categorical list delivery with personal relatability moments that build trust while providing actionable options",
         "view_multiplier": 2.5
+      },
+      {
+        "technique": "Single-take expert positioning with future-dated insight to create authority and urgency without cuts or editing",
+        "view_multiplier": 1.0
       }
     ],
     "top_key_claims": [
       {
         "claim": "Lead generation can happen through hobbies instead of uncomfortable cold outreach",
         "view_multiplier": 2.5
+      },
+      {
+        "claim": "Insurance is the third pillar that buyers must plan for in 2026",
+        "view_multiplier": 1.0
       }
     ],
-    "videos_analyzed": 1,
-    "last_updated": "2026-05-13T12:47:56.171458"
+    "videos_analyzed": 2,
+    "last_updated": "2026-05-14T14:08:39.619843"
   },
   "alpha-insurance": {
     "hook_patterns": {},
@@ -61,10 +94,10 @@
     "last_updated": ""
   },
   "meta": {
-    "total_videos_analyzed": 1,
+    "total_videos_analyzed": 2,
     "brain_version": "2.1",
     "created_at": "",
-    "last_updated": "2026-05-13T12:47:56.171625",
+    "last_updated": "2026-05-14T14:08:39.620124",
     "note": "This file is auto-updated after every pipeline run. Commit to GitHub to sync across devices. Do NOT gitignore."
   }
 }
