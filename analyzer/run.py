@@ -398,8 +398,20 @@ def run_pipeline(video_path: str, brand: str) -> None:
     step("Brain post-sync", logger)
     git_commit_brain(logger)
 
-    # Step 8: Remotion render
-    step("8/8 — Rendering Remotion video", logger)
+    # Step 8: B-Roll generation (Kling AI -> Pexels fallback)
+    step("8/9 - Generating b-roll (Kling AI / Pexels)", logger)
+    t0 = datetime.now()
+    try:
+        from analyzer.broll import generate_broll
+        broll_manifest = generate_broll(script_path, brand)
+        broll_source = broll_manifest.get("source", "unknown")
+        broll_count = broll_manifest.get("succeeded", 0)
+        logger.info(f"B-roll complete in {(datetime.now()-t0).seconds}s | {broll_count} clips [{broll_source}]")
+    except Exception as e:
+        logger.warning(f"B-roll generation failed: {e} - using existing clips")
+
+    # Step 9: Remotion render
+    step("9/9 - — Rendering Remotion video", logger)
     t0 = datetime.now()
     render_result = None
     try:

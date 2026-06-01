@@ -1,0 +1,19 @@
+{
+  "video_id": "tiktok-jacksonrealtor-2026-04-30-seller--7d9def",
+  "brand": "w-real-estate",
+  "timestamp": "20260514-141136",
+  "clips": {
+    "scene-3s": "broll\\tiktok-jacksonrealtor-2026-04-30-seller--7d9def\\scene-3s-01.mp4",
+    "scene-8s": "broll\\tiktok-jacksonrealtor-2026-04-30-seller--7d9def\\scene-8s-02.mp4",
+    "scene-16s": "broll\\tiktok-jacksonrealtor-2026-04-30-seller--7d9def\\scene-16s-03.mp4"
+  },
+  "failed": [
+    {
+      "label": "scene-0s",
+      "prompt": "Elegant exterior of luxury Mississippi home, golden hour lighting, slow push in",
+      "error": "Kling task 883980522328825924 timed out after 300s"
+    }
+  ],
+  "total": 4,
+  "succeeded": 3
+}

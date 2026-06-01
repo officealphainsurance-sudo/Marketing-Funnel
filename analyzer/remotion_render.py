@@ -57,6 +57,20 @@ def _setup_public(video_id, brand, logger):
     else:
         logger.warning(f"  B-roll folder not found: {broll_folder}")
 
+    headshot_src = ASSETS_DIR / brand / "headshot.png"
+    headshot_prop = None
+    if headshot_src.exists():
+        dest_name = f"{brand}-headshot.png"
+        shutil.copy2(headshot_src, pub_assets / dest_name)
+        headshot_prop = f"assets/{dest_name}"
+
+    outro_src = ASSETS_DIR / brand / "outro.png"
+    outro_prop = None
+    if outro_src.exists():
+        dest_name = f"{brand}-outro.png"
+        shutil.copy2(outro_src, pub_assets / dest_name)
+        outro_prop = f"assets/{dest_name}"
+
     logo_src  = ASSETS_DIR / brand / "logo.png"
     logo_prop = None
     if logo_src.exists():
@@ -67,7 +81,7 @@ def _setup_public(video_id, brand, logger):
     else:
         logger.warning(f"  Logo not found at {logo_src}")
 
-    return broll_props, logo_prop
+    return broll_props, logo_prop, headshot_prop, outro_prop
 
 
 def render_remotion(script_path, brand, logger=None):
@@ -102,7 +116,7 @@ def render_remotion(script_path, brand, logger=None):
     logger.info(f"  CTA:      {cta_text[:70]}")
 
     logger.info("  Setting up public assets...")
-    broll_props, logo_prop = _setup_public(video_id, brand, logger)
+    broll_props, logo_prop, headshot_prop, outro_prop = _setup_public(video_id, brand, logger)
 
     props = {
         "hookText":      hook_text,
@@ -115,6 +129,8 @@ def render_remotion(script_path, brand, logger=None):
         "brollSolution": broll_props.get("solution", ""),
         "brollCta":      broll_props.get("cta",      ""),
         "logoPath":      logo_prop or "",
+        "headshot":      headshot_prop or "",
+        "outroPath":     outro_prop or "",
     }
 
     TEMP_DIR.mkdir(parents=True, exist_ok=True)

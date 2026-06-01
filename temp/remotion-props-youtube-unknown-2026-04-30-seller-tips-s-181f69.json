@@ -8,5 +8,7 @@
   "brollProblem": "broll/youtube-unknown-2026-04-30-seller-tips-s-181f69-problem-kf.mp4",
   "brollSolution": "broll/youtube-unknown-2026-04-30-seller-tips-s-181f69-solution-kf.mp4",
   "brollCta": "broll/youtube-unknown-2026-04-30-seller-tips-s-181f69-cta-kf.mp4",
-  "logoPath": "assets/w-real-estate-logo.png"
+  "logoPath": "assets/w-real-estate-logo.png",
+  "headshot": "assets/w-real-estate-headshot.png",
+  "outroPath": "assets/w-real-estate-outro.png"
 }

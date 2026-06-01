@@ -87,6 +87,25 @@ function VideoLayer({ clipPath, color }) {
   );
 }
 
+function HeadshotLayer({ headshot }) {
+  const frame = useCurrentFrame();
+  const opacity = interpolate(frame, [0, 25], [0, 1], clamp);
+  if (!headshot) return null;
+  return React.createElement(AbsoluteFill, { style: { pointerEvents: 'none' } },
+    React.createElement(Img, {
+      src: staticFile(headshot),
+      style: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: 380,
+        height: 'auto',
+        opacity: opacity,
+      }
+    })
+  );
+}
+
 function LogoLayer({ logoPath }) {
   const frame = useCurrentFrame();
   const opacity = interpolate(frame, [0, 25], [0, 0.92], clamp);
@@ -166,10 +185,10 @@ function Badge({ text, fromFrame, color }) {
   }, text);
 }
 
-function HookScene({ hookText, color, brollClip, logoPath }) {
+function HookScene({ hookText, color, brollClip, logoPath, headshot }) {
   const tagSp = useSp(90, SMOOTH);
   const tagOp = useOp(90, 18);
-  const tagY  = interpolate(tagSp, [0, 1], [30, 0]);
+  const tagY  = interpolate(tagSp, [0, 1], [30, 0], clamp);
   return React.createElement(AbsoluteFill, null,
     React.createElement(VideoLayer, { clipPath: brollClip, color: color }),
     React.createElement(AbsoluteFill, { style: { justifyContent: 'center', alignItems: 'center', flexDirection: 'column' } },
@@ -187,11 +206,12 @@ function HookScene({ hookText, color, brollClip, logoPath }) {
         }
       }, color.tagline)
     ),
+    React.createElement(HeadshotLayer, { headshot: headshot }),
     React.createElement(LogoLayer, { logoPath: logoPath })
   );
 }
 
-function ProblemScene({ problemText, color, brollClip, logoPath }) {
+function ProblemScene({ problemText, color, brollClip, logoPath, headshot }) {
   const frame   = useCurrentFrame();
   const { fps } = useVideoConfig();
   const slideSp = spring({ frame: frame, fps: fps, config: SMOOTH });
@@ -234,11 +254,12 @@ function ProblemScene({ problemText, color, brollClip, logoPath }) {
       }),
       React.createElement(AccentBar, { fromFrame: 70, color: color })
     ),
+    React.createElement(HeadshotLayer, { headshot: headshot }),
     React.createElement(LogoLayer, { logoPath: logoPath })
   );
 }
 
-function SolutionScene({ solutionText, color, brollClip, logoPath }) {
+function SolutionScene({ solutionText, color, brollClip, logoPath, headshot }) {
   const frame   = useCurrentFrame();
   const { fps } = useVideoConfig();
   const mainSp  = spring({ frame: frame, fps: fps, config: SMOOTH });
@@ -255,21 +276,22 @@ function SolutionScene({ solutionText, color, brollClip, logoPath }) {
       React.createElement(WordReveal, { text: solutionText, startFrame: 25, color: color, fontSize: 56, delay: 3, highlightLast: true }),
       React.createElement(AccentBar, { fromFrame: 120, color: color, width: 300 })
     ),
+    React.createElement(HeadshotLayer, { headshot: headshot }),
     React.createElement(LogoLayer, { logoPath: logoPath })
   );
 }
 
-function CTAScene({ ctaText, color, brollClip, logoPath }) {
+function CTAScene({ ctaText, color, brollClip, logoPath, headshot }) {
   const frame   = useCurrentFrame();
   const { fps } = useVideoConfig();
   const textOp  = useOp(10, 15);
   const textSp  = useSp(10, SNAPPY);
-  const textY   = interpolate(textSp, [0, 1], [60, 0]);
+  const textY   = interpolate(textSp, [0, 1], [60, 0], clamp);
   const pillSp  = useSp(45, BOUNCY);
-  const pillSc  = interpolate(pillSp, [0, 1], [0.2, 1]);
+  const pillSc  = interpolate(pillSp, [0, 1], [0.2, 1], clamp);
   const pillOp  = useOp(45, 15);
   const phoneSp = useSp(80, BOUNCY);
-  const phoneSc = interpolate(phoneSp, [0, 1], [0.5, 1]);
+  const phoneSc = interpolate(phoneSp, [0, 1], [0.5, 1], clamp);
   const phoneOp = useOp(80, 15);
   const ringOp  = interpolate(frame % 60, [0, 30, 60], [0.15, 0.45, 0.15], clamp);
   const ringSc  = interpolate(frame % 60, [0, 30, 60], [1.0, 1.18, 1.0], clamp);
@@ -294,7 +316,20 @@ function CTAScene({ ctaText, color, brollClip, logoPath }) {
         React.createElement('div', { style: { color: color.cream, fontSize: 28, fontWeight: 500, fontFamily: 'system-ui', marginTop: 14, opacity: 0.9, letterSpacing: '1px', textShadow: '0 2px 8px rgba(0,0,0,0.8)' } }, color.name)
       )
     ),
+    React.createElement(HeadshotLayer, { headshot: headshot }),
     React.createElement(LogoLayer, { logoPath: logoPath })
+  );
+}
+
+function OutroScene({ outroPath }) {
+  const frame = useCurrentFrame();
+  const opacity = interpolate(frame, [0, 20], [0, 1], clamp);
+  if (!outroPath) return React.createElement(AbsoluteFill, { style: { backgroundColor: '#111111' } });
+  return React.createElement(AbsoluteFill, { style: { opacity: opacity } },
+    React.createElement(Img, {
+      src: staticFile(outroPath),
+      style: { width: '100%', height: '100%', objectFit: 'cover' }
+    })
   );
 }
 
@@ -309,6 +344,8 @@ export const AuthorityReel = function({
   brollSolution,
   brollCta,
   logoPath,
+  headshot,
+  outroPath,
 }) {
   const ht  = hookText     || "Selling your home shouldn't cost you sleep.";
   const pt  = problemText  || "Most agents make you juggle showings, staging stress, and endless uncertainty. It doesn't have to be that way.";
@@ -320,19 +357,24 @@ export const AuthorityReel = function({
   const bs  = brollSolution|| '';
   const bc  = brollCta     || '';
   const lp  = logoPath     || '';
+  const hs  = headshot     || '';
+  const op  = outroPath    || '';
   const color = BRAND_CONFIGS[bk] || BRAND_CONFIGS['w-real-estate'];
   return React.createElement(AbsoluteFill, { style: { backgroundColor: color.black } },
     React.createElement(Sequence, { from: 0, durationInFrames: 150 },
-      React.createElement(HookScene, { hookText: ht, color: color, brollClip: bh, logoPath: lp })
+      React.createElement(HookScene, { hookText: ht, color: color, brollClip: bh, logoPath: lp, headshot: hs })
     ),
     React.createElement(Sequence, { from: 150, durationInFrames: 180 },
-      React.createElement(ProblemScene, { problemText: pt, color: color, brollClip: bp, logoPath: lp })
+      React.createElement(ProblemScene, { problemText: pt, color: color, brollClip: bp, logoPath: lp, headshot: hs })
     ),
     React.createElement(Sequence, { from: 330, durationInFrames: 210 },
-      React.createElement(SolutionScene, { solutionText: st, color: color, brollClip: bs, logoPath: lp })
+      React.createElement(SolutionScene, { solutionText: st, color: color, brollClip: bs, logoPath: lp, headshot: hs })
     ),
     React.createElement(Sequence, { from: 540, durationInFrames: 210 },
-      React.createElement(CTAScene, { ctaText: ct, color: color, brollClip: bc, logoPath: lp })
+      React.createElement(CTAScene, { ctaText: ct, color: color, brollClip: bc, logoPath: lp, headshot: hs })
+    ),
+    React.createElement(Sequence, { from: 750, durationInFrames: 150 },
+      React.createElement(OutroScene, { outroPath: op })
     )
   );
 };
