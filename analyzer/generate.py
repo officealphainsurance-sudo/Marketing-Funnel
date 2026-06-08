@@ -470,6 +470,109 @@ def generate(analysis_path, brand_id: str, brain_context: dict = None) -> dict:
     return output
 
 
+# ── Phase 2 extensions ────────────────────────────────────────────────────────
+# These functions are pure extensions. They read Phase 1 output but never
+# modify any existing function above this line.
+
+_STOPWORDS = {
+    "a", "an", "the", "and", "or", "of", "to", "in", "on", "at", "for",
+    "with", "that", "this", "is", "are", "be", "have", "as", "it", "its",
+    "by", "from", "show", "showing", "use", "using", "cut", "clip",
+    "footage", "video", "shot", "shots", "image", "images",
+}
+
+
+def _distill_query(text: str, max_words: int = 5) -> str:
+    """Distill a descriptive cue into a short stock-video search term."""
+    # Take text before the first sentence-ending punctuation or parenthesis
+    for sep in ("(", "—", ";", ". ", ", showing", ", cut", ", with"):
+        if sep in text:
+            text = text.split(sep)[0]
+    words = text.strip().split()
+    # Drop leading stopwords, keep first max_words content words
+    kept = []
+    for w in words:
+        clean = w.strip(".,;:\"'").lower()
+        if clean not in _STOPWORDS:
+            kept.append(w.strip(".,;:\"'"))
+        if len(kept) >= max_words:
+            break
+    return " ".join(kept) if kept else text.strip()[:40]
+
+
+def _brand_fallbacks(brand_id: str) -> list[str]:
+    """Brand-specific stock queries when no generated cues are available."""
+    defaults = {
+        "w-real-estate": [
+            "luxury home exterior Mississippi",
+            "real estate agent keys",
+            "house sold sign",
+            "Mississippi neighborhood aerial",
+        ],
+        "alpha-insurance": [
+            "Mississippi family protection",
+            "insurance documents desk",
+            "car keys auto insurance",
+            "home insurance family",
+        ],
+    }
+    return defaults.get(brand_id, ["professional business Mississippi"])
+
+
+def generate_broll_queries(generated_content: dict, brand_id: str) -> list[str]:
+    """
+    Extract B-roll search queries from Phase 1 generated content.
+
+    Sources (in priority order):
+      1. content.b_roll_cues[].cue  — Claude-curated, already timeline-ordered
+      2. content.full_script.segments[].visual_direction  — per-segment fallback
+      3. Brand defaults  — if neither source exists
+
+    Returns a deduplicated list of 2-5 word phrases ready for Pexels/Pixabay.
+    At minimum 4 queries (one per manifest segment). At most 8.
+    """
+    content = generated_content.get("content", generated_content)
+    queries: list[str] = []
+
+    # Source 1: b_roll_cues
+    for cue in content.get("b_roll_cues", []):
+        raw = cue.get("cue", "").strip()
+        if raw:
+            queries.append(_distill_query(raw))
+
+    # Source 2: visual_direction from script segments (if we need more)
+    if len(queries) < 4:
+        segments = content.get("full_script", {}).get("segments", [])
+        for seg in segments:
+            vd = seg.get("visual_direction", "").strip()
+            if vd:
+                queries.append(_distill_query(vd))
+
+    # Source 3: brand defaults
+    if not queries:
+        queries = _brand_fallbacks(brand_id)
+
+    # Deduplicate preserving order
+    seen: set[str] = set()
+    unique: list[str] = []
+    for q in queries:
+        key = q.lower()
+        if key not in seen and q:
+            seen.add(key)
+            unique.append(q)
+
+    # Clamp to 4–8 queries; if under 4 pad from brand defaults
+    while len(unique) < 4:
+        for fb in _brand_fallbacks(brand_id):
+            if fb.lower() not in seen:
+                unique.append(fb)
+                seen.add(fb.lower())
+            if len(unique) >= 4:
+                break
+
+    return unique[:8]
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("Usage: python analyzer/generate.py <analysis_json> <brand_id>")

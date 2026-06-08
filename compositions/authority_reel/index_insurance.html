@@ -1,0 +1,275 @@
+<!-- hyperframes-registry-item: authority-reel-alpha-insurance -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Source+Sans+3:wght@400;700&display=block" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="../shared/animations.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #0D1825;
+    }
+
+    /* ── B-roll background ── */
+    #broll {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    /* ── Brand overlay ── */
+    #overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(13,24,37,0.28) 0%,
+        rgba(13,24,37,0.46) 40%,
+        rgba(13,24,37,0.70) 78%,
+        rgba(13,24,37,0.90) 100%
+      );
+      z-index: 1;
+      opacity: 0;
+    }
+
+    /* ── Logo (top-left) ── */
+    #logo-area {
+      position: absolute;
+      top: 72px;
+      left: 72px;
+      z-index: 10;
+      opacity: 0;
+    }
+    #logo-area img {
+      height: 80px;
+      width: auto;
+    }
+    #logo-wordmark {
+      font-family: "Merriweather", serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #C9A84C;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Trust badge (top-right) ── */
+    #trust-badge {
+      position: absolute;
+      top: 72px;
+      right: 72px;
+      z-index: 10;
+      text-align: right;
+    }
+    #trust-badge span {
+      font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ── Subtitle container (center-lower) ── */
+    #subtitle-container {
+      position: absolute;
+      left: 72px;
+      right: 72px;
+      bottom: 380px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sub-line {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    .sub-word {
+      display: inline-block;
+      font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+      font-size: 72px;
+      font-weight: 700;
+      color: #FFFFFF;
+      text-shadow:
+        0 2px 12px rgba(0,0,0,0.65),
+        0 0 40px rgba(0,0,0,0.45);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin: 0 6px;
+      transform-origin: 50% 100%;
+    }
+
+    /* ── Lower-third CTA ── */
+    #lower-third {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 320px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0 72px 64px;
+      background: linear-gradient(180deg, transparent 0%, rgba(27,46,75,0.75) 40%, rgba(27,46,75,0.94) 100%);
+      opacity: 0;
+    }
+
+    #brand-name {
+      font-family: "Merriweather", serif;
+      font-size: 50px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 0.01em;
+      text-align: center;
+      opacity: 0;
+      transform: translateX(-16px);
+    }
+
+    #phone {
+      font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+      font-size: 46px;
+      font-weight: 700;
+      color: #C9A84C;
+      letter-spacing: 0.10em;
+      text-align: center;
+      margin-top: 10px;
+      opacity: 0;
+      transform: translateX(-16px);
+    }
+
+    #tagline {
+      font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+      font-size: 26px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.60);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    #divider {
+      width: 64px;
+      height: 3px;
+      background: #C9A84C;
+      margin: 0 auto 18px;
+    }
+  </style>
+</head>
+<body>
+  <div
+    id="root"
+    data-composition-id="authority-reel-alpha-insurance"
+    data-start="0"
+    data-duration="30"
+    data-width="1080"
+    data-height="1920"
+    data-fps="30"
+  >
+    <video id="broll" muted playsinline preload="auto"></video>
+
+    <div id="overlay"></div>
+
+    <div id="logo-area">
+      <div id="logo-wordmark">Alpha Insurance</div>
+    </div>
+
+    <div id="trust-badge">
+      <span>Mississippi</span><br/>
+      <span>Since 1994</span>
+    </div>
+
+    <div id="subtitle-container"></div>
+
+    <div id="lower-third">
+      <div id="divider"></div>
+      <div id="brand-name"></div>
+      <div id="phone"></div>
+      <div id="tagline">Everything you protect, we cover.</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // ── Load variables ─────────────────────────────────────────────────
+      var DEFAULT_VARS = {
+        words: [],
+        duration: 30,
+        brand_name: "Alpha Insurance",
+        phone: "601-981-2911",
+        cta_text: "Call Alpha Insurance at 601-981-2911 today.",
+        broll_path: "",
+        audio_path: ""
+      };
+
+      var vars = DEFAULT_VARS;
+      try {
+        if (window.__hyperframes && typeof window.__hyperframes.getVariables === "function") {
+          var v = window.__hyperframes.getVariables();
+          if (v && typeof v === "object") {
+            vars = Object.assign({}, DEFAULT_VARS, v);
+          }
+        }
+      } catch (e) {
+        console.warn("getVariables() error:", e);
+      }
+
+      // ── Wire DOM ───────────────────────────────────────────────────────
+      document.getElementById("brand-name").textContent = vars.brand_name;
+      document.getElementById("phone").textContent      = vars.phone;
+
+      var brollEl = document.getElementById("broll");
+      if (vars.broll_path) {
+        brollEl.src  = vars.broll_path;
+        brollEl.loop = true;
+      }
+
+      if (vars.duration) {
+        document.getElementById("root").setAttribute("data-duration", String(vars.duration));
+      }
+
+      // ── Build timeline ─────────────────────────────────────────────────
+      var tl = buildAuthorityTimeline(vars, {
+        subtitleContainer: document.getElementById("subtitle-container"),
+        lowerThird:        document.getElementById("lower-third"),
+        brandNameEl:       document.getElementById("brand-name"),
+        phoneEl:           document.getElementById("phone"),
+        overlayEl:         document.getElementById("overlay"),
+        logoEl:            document.getElementById("logo-area")
+      });
+
+      // ── HyperFrames render hooks ───────────────────────────────────────
+      window.hyperframesReady = function () {
+        tl.pause(0);
+        if (brollEl.src) { brollEl.load(); }
+      };
+
+      window.hyperframesSeek = function (t) {
+        tl.seek(t, false);
+      };
+
+      // ── Preview / dev mode ────────────────────────────────────────────
+      if (!window.__hyperframes) {
+        tl.play(0);
+        if (brollEl.src) { brollEl.play().catch(function() {}); }
+      }
+    })();
+  </script>
+</body>
+</html>

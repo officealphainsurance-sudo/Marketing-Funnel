@@ -1,7 +1,24 @@
+# ── Core / shared ────────────────────────────────────────────────────────────
 anthropic
 openai
 python-dotenv
+requests
+
+# ── Phase 1 ───────────────────────────────────────────────────────────────────
 pytesseract
 Pillow
-ffmpeg-python
-requests
+
+# ── Phase 2: TTS ──────────────────────────────────────────────────────────────
+mutagen          # MP3 duration reading (tts.py)
+
+# ── Phase 2: Transcription ────────────────────────────────────────────────────
+faster-whisper   # Word-level timestamps (subtitle_sync.py)
+                 # Requires: pip install ctranslate2 (pulled automatically)
+
+# ── Phase 2: MCP server ───────────────────────────────────────────────────────
+mcp[cli]         # FastMCP server (mcp_server.py)
+
+# ── Phase 2: HyperFrames render ───────────────────────────────────────────────
+# HyperFrames is a Node.js tool — install separately:
+#   npm install hyperframes
+# Not a Python package; managed via npx.

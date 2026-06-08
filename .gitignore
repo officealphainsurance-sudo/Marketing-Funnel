@@ -44,7 +44,10 @@ __pycache__/
 # Exception: keep gitkeep files
 !.gitkeep
 
-# Node.js (Phase 2 — Remotion)
+# Phase 2 intermediate outputs (audio stubs, transcripts, manifests, B-roll clips)
+/temp/
+
+# Node.js (HyperFrames)
 node_modules/
 npm-debug.log*
 yarn-debug.log*
