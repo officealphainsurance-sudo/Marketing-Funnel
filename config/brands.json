@@ -1,7 +1,7 @@
 {
   "w-real-estate": {
     "brand_id": "w-real-estate",
-    "agent": "Amanda Frizell, Realtor\u00ae",
+    "agent": "Amanda Frizell, Realtor®",
     "brokerage_name": "W Real Estate, LLC",
     "brokerage_phone": "601-499-0952",
     "agent_cell": "601-966-2798",
@@ -21,7 +21,34 @@
       "facebook": "TBD"
     },
     "voice_id_elevenlabs": null,
-    "compliance_required": "Mississippi Rule 3.3 — every piece of content must prominently include brokerage name (W Real Estate, LLC) and brokerage phone (601-499-0952). REALTOR\u00ae designation satisfies licensee status disclosure."
+    "compliance_required": "Mississippi Rule 3.3 — every piece of content must prominently include brokerage name (W Real Estate, LLC) and brokerage phone (601-499-0952). REALTOR® designation satisfies licensee status disclosure.",
+    "phase2": {
+      "theme_name": "Mississippi Luxury",
+      "name": "W Real Estate LLC",
+      "phone": "601-499-0952",
+      "colors": {
+        "primary": "#8B1A1A",
+        "secondary": "#C9A84C",
+        "dark": "#1A0A0A",
+        "light": "#F5F0E8",
+        "overlay": "rgba(26,10,10,0.52)"
+      },
+      "fonts": {
+        "display": "Playfair Display",
+        "body": "Lato",
+        "weight_display": 700,
+        "weight_body": 400
+      },
+      "voice_id_env": "ELEVENLABS_AMANDA_VOICE_ID",
+      "logo": "assets/w-real-estate/logo.png",
+      "tone": "luxury, editorial, authoritative, confident",
+      "cta_default": "Call W Real Estate LLC at 601-499-0952 today.",
+      "format": "9:16",
+      "dimensions": {"width": 1080, "height": 1920},
+      "duration_target_seconds": 30,
+      "fps": 30,
+      "composition": "compositions/authority_reel/index.html"
+    }
   },
   "alpha-insurance": {
     "brand_id": "alpha-insurance",
@@ -46,6 +73,33 @@
       "facebook": "TBD"
     },
     "voice_id_elevenlabs": null,
-    "voice_strategy_note": "Same voice clone as W Real Estate when activated in Phase 3."
+    "voice_strategy_note": "Same voice clone as W Real Estate when activated in Phase 3.",
+    "phase2": {
+      "theme_name": "Mississippi Trust",
+      "name": "Alpha Insurance",
+      "phone": "601-981-2911",
+      "colors": {
+        "primary": "#1B2E4B",
+        "secondary": "#C9A84C",
+        "dark": "#0D1825",
+        "light": "#F0F4F8",
+        "overlay": "rgba(13,24,37,0.55)"
+      },
+      "fonts": {
+        "display": "Merriweather",
+        "body": "Source Sans Pro",
+        "weight_display": 700,
+        "weight_body": 400
+      },
+      "voice_id_env": "ELEVENLABS_AMANDA_VOICE_ID",
+      "logo": "assets/alpha-insurance/logo.png",
+      "tone": "trustworthy, local, protective, clear, established",
+      "cta_default": "Call Alpha Insurance at 601-981-2911 today.",
+      "format": "9:16",
+      "dimensions": {"width": 1080, "height": 1920},
+      "duration_target_seconds": 30,
+      "fps": 30,
+      "composition": "compositions/authority_reel/index_insurance.html"
+    }
   }
 }
