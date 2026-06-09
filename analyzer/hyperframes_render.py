@@ -60,8 +60,9 @@ def render(
     Render a HyperFrames composition to MP4.
 
     Args:
-        composition:  Path to composition HTML, relative to project root.
-                      e.g. "compositions/authority_reel/index.html"
+        composition:  Path to the composition DIRECTORY (containing index.html),
+                      relative to project root.
+                      e.g. "compositions/authority_reel/alpha-insurance"
         variables:    Dict passed to window.__hyperframes.getVariables().
                       Must include: words, duration, brand_name, phone,
                       broll_path, audio_path.
@@ -75,12 +76,17 @@ def render(
     """
     _check_hyperframes()
 
-    # ── Resolve paths ──────────────────────────────────────────────────────
-    comp_path = Path(composition)
-    if not comp_path.is_absolute():
-        comp_path = ROOT / composition
-    if not comp_path.exists():
-        raise FileNotFoundError(f"Composition not found: {comp_path}")
+    # ── Resolve composition directory ──────────────────────────────────────
+    # composition is a directory; HyperFrames finds index.html automatically
+    # when run from that directory (cwd = comp_dir, cmd = "render .").
+    comp_dir = Path(composition)
+    if not comp_dir.is_absolute():
+        comp_dir = ROOT / composition
+    if not comp_dir.is_dir():
+        raise FileNotFoundError(f"Composition directory not found: {comp_dir}")
+    index_html = comp_dir / "index.html"
+    if not index_html.exists():
+        raise FileNotFoundError(f"index.html not found in: {comp_dir}")
 
     if output_path is None:
         brand = variables.get("brand", "video")
@@ -90,7 +96,7 @@ def render(
     output_path = str(Path(output_path).resolve())
 
     # ── Write variables to temp file ───────────────────────────────────────
-    # --variables-file avoids shell-quoting word arrays with special chars
+    # --variables-file avoids shell-quoting issues with large word arrays
     vars_file = tempfile.NamedTemporaryFile(
         mode="w", suffix=".json", prefix="hf_vars_", delete=False
     )
@@ -99,10 +105,10 @@ def render(
         vars_file.close()
 
         # ── Build command ──────────────────────────────────────────────────
-        # CWD = project root so `compositions/…` relative paths resolve
+        # Run FROM the composition directory — HyperFrames picks up index.html
+        # automatically. No --composition flag needed.
         cmd = [
             "npx", "hyperframes", "render", ".",
-            "--composition", str(comp_path.relative_to(ROOT)),
             "--output",      output_path,
             "--fps",         str(fps),
             "--quality",     quality,
@@ -110,13 +116,13 @@ def render(
             "--variables-file", vars_file.name,
         ]
 
-        logger.info(f"  Render: {comp_path.name} → {Path(output_path).name}")
+        logger.info(f"  Render: {comp_dir.name}/index.html → {Path(output_path).name}")
         logger.info(f"  Cmd: {' '.join(cmd)}")
 
         t0 = time.time()
         result = subprocess.run(
             cmd,
-            cwd=str(ROOT),
+            cwd=str(comp_dir),
             capture_output=True,
             text=True,
             timeout=RENDER_TIMEOUT,
@@ -155,7 +161,7 @@ def render(
         "file_size_mb":        size_mb,
         "duration_seconds":    variables.get("duration", 0),
         "render_time_seconds": elapsed,
-        "composition":         str(comp_path.relative_to(ROOT)),
+        "composition":         str(comp_dir.relative_to(ROOT)),
         "fps":                 fps,
         "quality":             quality,
     }
@@ -174,10 +180,10 @@ if __name__ == "__main__":
         print(f"  ✗ {e}")
         sys.exit(1)
 
-    # Verify composition files exist
+    # Verify composition directories and shared file exist
     comps = [
-        "compositions/authority_reel/index.html",
-        "compositions/authority_reel/index_insurance.html",
+        "compositions/authority_reel/w-real-estate/index.html",
+        "compositions/authority_reel/alpha-insurance/index.html",
         "compositions/shared/animations.js",
     ]
     all_ok = True

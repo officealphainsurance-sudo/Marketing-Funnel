@@ -268,7 +268,7 @@ def run_pipeline(
         "phone":      p2["phone"],
         "cta_text":   p2["cta_default"],
         "duration":   duration,
-        "words":      words,
+        "words":      json.dumps(words),   # stringified — composition parses via JSON.parse
         "broll_path": broll_path,
         "audio_path": str(audio_path),
     }

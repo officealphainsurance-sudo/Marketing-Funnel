@@ -1,12 +1,21 @@
-<!-- hyperframes-registry-item: authority-reel-w-real-estate -->
+<!-- hyperframes-registry-item: authority-reel-alpha-insurance -->
 <!doctype html>
-<html lang="en">
+<html lang="en" data-composition-variables='[
+  {"id":"brand",      "type":"string","label":"Brand ID",       "default":"alpha-insurance"},
+  {"id":"brand_name", "type":"string","label":"Brand Name",     "default":"Alpha Insurance"},
+  {"id":"phone",      "type":"string","label":"Phone",          "default":"601-981-2911"},
+  {"id":"duration",   "type":"number","label":"Duration (s)",   "default":30},
+  {"id":"words",      "type":"string","label":"Words JSON",     "default":"[]"},
+  {"id":"broll_path", "type":"string","label":"B-Roll Path",    "default":""},
+  {"id":"audio_path", "type":"string","label":"Audio Path",     "default":""},
+  {"id":"cta_text",   "type":"string","label":"CTA Text",       "default":"Call Alpha Insurance at 601-981-2911 today."}
+]'>
 <head>
   <meta charset="UTF-8" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@400;700&display=block" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="../shared/animations.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Source+Sans+3:wght@400;700&display=block" rel="stylesheet" />
+  <script src="../../shared/gsap.min.js"></script>
+  <script src="../../shared/animations.js"></script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -14,7 +23,7 @@
       width: 1080px;
       height: 1920px;
       overflow: hidden;
-      background: #1A0A0A;
+      background: #0D1825;
     }
 
     /* ── B-roll background ── */
@@ -33,10 +42,10 @@
       inset: 0;
       background: linear-gradient(
         180deg,
-        rgba(26,10,10,0.30) 0%,
-        rgba(26,10,10,0.48) 40%,
-        rgba(26,10,10,0.72) 78%,
-        rgba(26,10,10,0.88) 100%
+        rgba(13,24,37,0.28) 0%,
+        rgba(13,24,37,0.46) 40%,
+        rgba(13,24,37,0.70) 78%,
+        rgba(13,24,37,0.90) 100%
       );
       z-index: 1;
       opacity: 0;
@@ -55,11 +64,27 @@
       width: auto;
     }
     #logo-wordmark {
-      font-family: "Playfair Display", serif;
-      font-size: 28px;
+      font-family: "Merriweather", serif;
+      font-size: 26px;
       font-weight: 700;
       color: #C9A84C;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Trust badge (top-right) ── */
+    #trust-badge {
+      position: absolute;
+      top: 72px;
+      right: 72px;
+      z-index: 10;
+      text-align: right;
+    }
+    #trust-badge span {
+      font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
@@ -73,7 +98,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .sub-line {
@@ -84,13 +109,13 @@
 
     .sub-word {
       display: inline-block;
-      font-family: "Lato", sans-serif;
+      font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
       font-size: 72px;
       font-weight: 700;
       color: #FFFFFF;
       text-shadow:
-        0 2px 12px rgba(0,0,0,0.6),
-        0 0 40px rgba(0,0,0,0.4);
+        0 2px 12px rgba(0,0,0,0.65),
+        0 0 40px rgba(0,0,0,0.45);
       line-height: 1.15;
       letter-spacing: -0.01em;
       margin: 0 6px;
@@ -110,45 +135,56 @@
       justify-content: center;
       align-items: center;
       padding: 0 72px 64px;
-      background: linear-gradient(180deg, transparent 0%, rgba(139,26,26,0.72) 40%, rgba(139,26,26,0.92) 100%);
+      background: linear-gradient(180deg, transparent 0%, rgba(27,46,75,0.75) 40%, rgba(27,46,75,0.94) 100%);
       opacity: 0;
     }
 
     #brand-name {
-      font-family: "Playfair Display", serif;
-      font-size: 52px;
-      font-weight: 900;
+      font-family: "Merriweather", serif;
+      font-size: 50px;
+      font-weight: 700;
       color: #FFFFFF;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
       text-align: center;
       opacity: 0;
       transform: translateX(-16px);
     }
 
     #phone {
-      font-family: "Lato", sans-serif;
-      font-size: 44px;
+      font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+      font-size: 46px;
       font-weight: 700;
       color: #C9A84C;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.10em;
       text-align: center;
-      margin-top: 12px;
+      margin-top: 10px;
       opacity: 0;
       transform: translateX(-16px);
     }
 
+    #tagline {
+      font-family: "Source Sans 3", "Source Sans Pro", sans-serif;
+      font-size: 26px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.60);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 14px;
+    }
+
     #divider {
-      width: 80px;
+      width: 64px;
       height: 3px;
       background: #C9A84C;
-      margin: 0 auto 20px;
+      margin: 0 auto 18px;
     }
   </style>
 </head>
 <body>
   <div
     id="root"
-    data-composition-id="authority-reel-w-real-estate"
+    data-composition-id="authority-reel-alpha-insurance"
     data-start="0"
     data-duration="30"
     data-width="1080"
@@ -160,7 +196,12 @@
     <div id="overlay"></div>
 
     <div id="logo-area">
-      <div id="logo-wordmark">W Real Estate</div>
+      <div id="logo-wordmark">Alpha Insurance</div>
+    </div>
+
+    <div id="trust-badge">
+      <span>Mississippi</span><br/>
+      <span>Since 1994</span>
     </div>
 
     <div id="subtitle-container"></div>
@@ -169,6 +210,7 @@
       <div id="divider"></div>
       <div id="brand-name"></div>
       <div id="phone"></div>
+      <div id="tagline">Everything you protect, we cover.</div>
     </div>
   </div>
 
@@ -178,9 +220,9 @@
       var DEFAULT_VARS = {
         words: [],
         duration: 30,
-        brand_name: "W Real Estate, LLC",
-        phone: "601-499-0952",
-        cta_text: "Call W Real Estate, LLC at 601-499-0952 today.",
+        brand_name: "Alpha Insurance",
+        phone: "601-981-2911",
+        cta_text: "Call Alpha Insurance at 601-981-2911 today.",
         broll_path: "",
         audio_path: ""
       };
@@ -191,6 +233,9 @@
           var v = window.__hyperframes.getVariables();
           if (v && typeof v === "object") {
             vars = Object.assign({}, DEFAULT_VARS, v);
+            if (typeof vars.words === "string") {
+              try { vars.words = JSON.parse(vars.words); } catch (_) { vars.words = []; }
+            }
           }
         }
       } catch (e) {
@@ -203,11 +248,10 @@
 
       var brollEl = document.getElementById("broll");
       if (vars.broll_path) {
-        brollEl.src = vars.broll_path;
+        brollEl.src  = vars.broll_path;
         brollEl.loop = true;
       }
 
-      // Update data-duration to match actual audio duration
       if (vars.duration) {
         document.getElementById("root").setAttribute("data-duration", String(vars.duration));
       }
@@ -222,20 +266,12 @@
         logoEl:            document.getElementById("logo-area")
       });
 
-      // ── HyperFrames render hook ────────────────────────────────────────
-      // When rendering, HyperFrames calls window.hyperframesReady() then
-      // seeks the timeline to each frame time via window.hyperframesSeek(t).
-      window.hyperframesReady = function () {
-        tl.pause(0);
-        if (brollEl.src) { brollEl.load(); }
-      };
+      // ── Register timeline with HyperFrames renderer ───────────────────
+      window.__timelines = window.__timelines || {};
+      window.__timelines["authority-reel-alpha-insurance"] = tl;
 
-      window.hyperframesSeek = function (t) {
-        tl.seek(t, false);
-      };
-
-      // ── Preview / dev mode (no HyperFrames) ───────────────────────────
-      if (!window.__hyperframes) {
+      // ── Preview / dev mode (no HyperFrames renderer) ─────────────────
+      if (!window.__player) {
         tl.play(0);
         if (brollEl.src) { brollEl.play().catch(function() {}); }
       }

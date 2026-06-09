@@ -47,7 +47,7 @@
       "dimensions": {"width": 1080, "height": 1920},
       "duration_target_seconds": 30,
       "fps": 30,
-      "composition": "compositions/authority_reel/index.html"
+      "composition": "compositions/authority_reel/w-real-estate"
     }
   },
   "alpha-insurance": {
@@ -99,7 +99,7 @@
       "dimensions": {"width": 1080, "height": 1920},
       "duration_target_seconds": 30,
       "fps": 30,
-      "composition": "compositions/authority_reel/index_insurance.html"
+      "composition": "compositions/authority_reel/alpha-insurance"
     }
   }
 }
