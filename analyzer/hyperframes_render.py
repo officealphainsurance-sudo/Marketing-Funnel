@@ -83,21 +83,35 @@ def _concat_broll_clips(clips: list[dict], work_dir: Path) -> str | None:
     segment_dir.mkdir(parents=True, exist_ok=True)
 
     segment_paths: list[Path] = []
+    seg_duration_sum = 0.0
     for i, clip in enumerate(valid):
         src = clip["local_path"]
         seg_duration = float(clip["duration"])
         role = clip.get("role", f"clip{i}")
+        is_last = i == len(valid) - 1
 
         actual_duration = _ffprobe_duration(src)
         seg_out = segment_dir / f"seg_{i:02d}_{role}.mp4"
 
         cmd = ["ffmpeg", "-y"]
-        if actual_duration is None or actual_duration < seg_duration:
+        # Loop the source if it's shorter than the assigned segment duration.
+        # The LAST segment always loops regardless — encoder rounding can leave
+        # it a few frames short, and concat_demuxer / -stream_loop downstream
+        # in _composite_broll would otherwise wrap back to the FIRST segment
+        # to fill the gap, making the final clip appear to "cut off early"
+        # and get replaced by the hook clip at the very end of the reel.
+        if is_last or actual_duration is None or actual_duration < seg_duration:
             cmd += ["-stream_loop", "-1"]
         cmd += [
             "-i", src,
             "-t", str(seg_duration),
             "-an",
+            # Pexels source clips have wildly varying native framerates (e.g.
+            # 25fps vs 60fps). Without normalizing here, the concat demuxer
+            # joins segments with mismatched PTS spacing, which manifests as
+            # a multi-second frozen frame at the segment boundary in the
+            # combined output.
+            "-r", "30", "-fps_mode", "cfr",
             "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
             str(seg_out),
         ]
@@ -107,11 +121,25 @@ def _concat_broll_clips(clips: list[dict], work_dir: Path) -> str | None:
             logger.warning(f"  B-roll segment trim failed [{role}]: {r.stderr[-300:]}")
             continue
         segment_paths.append(seg_out)
+        seg_duration_sum += seg_duration
         logger.info(f"  B-roll segment [{role}]: {seg_duration:.2f}s ({Path(src).name})")
+
+        if is_last:
+            seg_actual = _ffprobe_duration(str(seg_out))
+            logger.info(
+                f"  Last segment diagnostic: source={Path(src).name} "
+                f"source_duration={actual_duration if actual_duration is not None else 'unknown'} "
+                f"assigned={seg_duration:.2f}s trimmed_output={seg_actual if seg_actual is not None else 'unknown'}"
+            )
 
     if not segment_paths:
         return None
     if len(segment_paths) == 1:
+        combined_duration = _ffprobe_duration(str(segment_paths[0]))
+        logger.info(
+            f"  B-roll diagnostic: combined={combined_duration if combined_duration is not None else 'unknown'} "
+            f"vs segment_sum={seg_duration_sum:.2f}s"
+        )
         return str(segment_paths[0])
 
     # ffmpeg concat demuxer list — paths normalized for cross-platform safety
@@ -125,6 +153,7 @@ def _concat_broll_clips(clips: list[dict], work_dir: Path) -> str | None:
     cmd = [
         "ffmpeg", "-y", "-f", "concat", "-safe", "0",
         "-i", str(list_path),
+        "-r", "30", "-fps_mode", "cfr",
         "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
         str(combined),
     ]
@@ -133,7 +162,12 @@ def _concat_broll_clips(clips: list[dict], work_dir: Path) -> str | None:
         logger.warning(f"  B-roll concat failed: {r.stderr[-300:]} — using first segment only")
         return str(segment_paths[0])
 
+    combined_duration = _ffprobe_duration(str(combined))
     logger.info(f"  B-roll combined: {len(segment_paths)} segments → {combined.name}")
+    logger.info(
+        f"  B-roll diagnostic: combined={combined_duration if combined_duration is not None else 'unknown'} "
+        f"vs segment_sum={seg_duration_sum:.2f}s"
+    )
     return str(combined)
 
 
@@ -346,8 +380,16 @@ def render(
     # of the HF render and composites the B-roll underneath instead.
     broll_clips = variables.get("broll_clips")
     broll_path = variables.get("broll_path", "")
+    audio_duration = float(variables.get("duration", 30))
 
     if broll_clips:
+        seg_duration_sum = sum(
+            float(c.get("duration", 0))
+            for c in broll_clips
+            if c.get("local_path") and Path(c["local_path"]).exists()
+        )
+        logger.info(f"  B-roll total: {seg_duration_sum:.2f}s vs audio: {audio_duration:.2f}s")
+
         work_dir = Path(tempfile.mkdtemp(prefix="hf_broll_"))
         try:
             combined = _concat_broll_clips(broll_clips, work_dir)
