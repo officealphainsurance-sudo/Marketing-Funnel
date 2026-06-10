@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.11
+# Adapted from MoneyPrinterTurbo (MIT) github.com/harry0703/MoneyPrinterTurbo
 """
 subtitle_sync.py — Word-level timestamp extraction via faster-whisper.
 
@@ -8,6 +9,9 @@ reveal in the GSAP timeline. Treat it accordingly.
 
 Device selection: MPS (Apple Silicon GPU) → CPU fallback.
 Compute type: always int8 on CPU (float16 crashes M1 CPU).
+
+Word-level output drives per-word GSAP reveals; phrase-level output
+(grouped at punctuation boundaries) drives readable on-screen captions.
 """
 
 import os
@@ -56,6 +60,69 @@ def _write_srt(words: list[dict], srt_path: Path) -> None:
         lines.append(str(i))
         lines.append(f"{_format_srt_time(w['start'])} --> {_format_srt_time(w['end'])}")
         lines.append(w["word"].strip())
+        lines.append("")
+    srt_path.write_text("\n".join(lines), encoding="utf-8")
+
+
+# Punctuation that ends a caption phrase — adapted from MoneyPrinterTurbo's
+# const.PUNCTUATIONS / str_contains_punctuation(). Whisper attaches trailing
+# punctuation directly to the word token (e.g. "home.", "ready?").
+PUNCTUATIONS = {".", ",", "!", "?", ";", ":", "—", "-", "…"}
+
+# Hard cap on words per caption phrase. Whisper sometimes produces long runs
+# with no punctuation (especially on stub/TTS audio); without a cap a single
+# caption could span the entire reel.
+MAX_PHRASE_WORDS = 8
+
+
+def _group_words_into_phrases(words: list[dict]) -> list[dict]:
+    """
+    Group word-level timestamps into readable caption phrases.
+
+    Adapted from MoneyPrinterTurbo's subtitle.create()/recognized(): walk the
+    word list, accumulating a phrase until a word ends in punctuation (a
+    natural sentence/clause break), then flush it as one caption entry.
+    MAX_PHRASE_WORDS additionally caps phrase length when no punctuation
+    appears for a long stretch.
+
+    Returns a list of {text, start, end, words} dicts, one per phrase.
+    """
+    phrases: list[dict] = []
+    current: list[dict] = []
+
+    for w in words:
+        current.append(w)
+        token = w["word"].strip()
+        ends_phrase = (
+            (token and token[-1] in PUNCTUATIONS)
+            or len(current) >= MAX_PHRASE_WORDS
+        )
+        if ends_phrase:
+            phrases.append({
+                "text": " ".join(p["word"].strip() for p in current).strip(),
+                "start": current[0]["start"],
+                "end": current[-1]["end"],
+                "words": current,
+            })
+            current = []
+
+    if current:
+        phrases.append({
+            "text": " ".join(p["word"].strip() for p in current).strip(),
+            "start": current[0]["start"],
+            "end": current[-1]["end"],
+            "words": current,
+        })
+
+    return [p for p in phrases if p["text"]]
+
+
+def _write_phrase_srt(phrases: list[dict], srt_path: Path) -> None:
+    lines = []
+    for i, p in enumerate(phrases, 1):
+        lines.append(str(i))
+        lines.append(f"{_format_srt_time(p['start'])} --> {_format_srt_time(p['end'])}")
+        lines.append(p["text"])
         lines.append("")
     srt_path.write_text("\n".join(lines), encoding="utf-8")
 
@@ -124,11 +191,15 @@ def transcribe(audio_path: str, brand: str) -> dict:
 
     duration = round(info.duration, 3) if hasattr(info, "duration") else 0.0
 
+    phrases = _group_words_into_phrases(words) if words else []
+
     result = {
         "words": words,
+        "phrases": phrases,
         "full_text": full_text,
         "duration": duration,
         "word_count": len(words),
+        "phrase_count": len(phrases),
         "model": model_size,
         "device": device,
     }
@@ -136,6 +207,7 @@ def transcribe(audio_path: str, brand: str) -> dict:
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     json_path = TEMP_DIR / f"subtitles_{brand}_{timestamp}.json"
     srt_path = TEMP_DIR / f"subtitles_{brand}_{timestamp}.srt"
+    captions_srt_path = TEMP_DIR / f"captions_{brand}_{timestamp}.srt"
 
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
@@ -144,8 +216,13 @@ def transcribe(audio_path: str, brand: str) -> dict:
         _write_srt(words, srt_path)
         logger.info(f"  SRT written: {srt_path.name}")
 
+    if phrases:
+        _write_phrase_srt(phrases, captions_srt_path)
+        logger.info(f"  Captions SRT written: {captions_srt_path.name}")
+
     logger.info(
         f"  Subtitles: {result['word_count']} words | "
+        f"{result['phrase_count']} caption phrases | "
         f"{duration:.1f}s | → {json_path.name}"
     )
 
@@ -179,6 +256,22 @@ if __name__ == "__main__":
     assert "word_count" in result, "Missing 'word_count' key"
     assert result["duration"] > 0, "Duration must be > 0"
 
+    # Validate phrase grouping structure (works regardless of word count)
+    assert "phrases" in result, "Missing 'phrases' key"
+    assert "phrase_count" in result, "Missing 'phrase_count' key"
+    assert result["phrase_count"] == len(result["phrases"])
+    for phrase in result["phrases"]:
+        assert phrase["text"], "Phrase text must not be empty"
+        assert phrase["end"] >= phrase["start"], "Phrase end must be >= start"
+        assert len(phrase["words"]) <= MAX_PHRASE_WORDS, (
+            f"Phrase exceeds MAX_PHRASE_WORDS: {len(phrase['words'])} words"
+        )
+    if result["words"]:
+        total_phrase_words = sum(len(p["words"]) for p in result["phrases"])
+        assert total_phrase_words == result["word_count"], (
+            f"Phrase grouping dropped words: {total_phrase_words} vs {result['word_count']}"
+        )
+
     # Stub/silent audio produces 0-few noise words — expected and valid
     # Only enforce > 10 words when real ElevenLabs voice is active
     is_stub_audio = result["word_count"] < 10
@@ -189,13 +282,17 @@ if __name__ == "__main__":
         print(f"\n✓ subtitle_sync self-test passed [STUB AUDIO — silent placeholder]")
         print(f"  Duration: {result['duration']:.1f}s")
         print(f"  Word count: {result['word_count']} (expected < 10 — silent stub audio)")
+        print(f"  Phrase count: {result['phrase_count']}")
         print(f"  ⚠️  PENDING: ElevenLabs voice clone not yet configured")
         print("     Full word-count validation activates once real voice is configured")
     else:
         assert result["word_count"] > 10, f"Expected > 10 words, got {result['word_count']}"
         _validate_timestamps(result["words"])
+        assert result["phrase_count"] > 0, "Expected at least one caption phrase"
         print(f"\n✓ subtitle_sync self-test passed [REAL AUDIO]")
         print(f"  Duration: {result['duration']:.1f}s")
         print(f"  Words: {result['word_count']}")
         print(f"  First 5: {[w['word'] for w in result['words'][:5]]}")
+        print(f"  Phrases: {result['phrase_count']}")
+        print(f"  First phrase: {result['phrases'][0]['text']!r}")
         print(f"  Timestamps monotonic: ✓")

@@ -262,19 +262,25 @@ def run_pipeline(
 
     # ── Step 8: Compose render variables ──────────────────────────────────
     logger.info("\n[8_compose_vars]")
+    broll_clips = [
+        {"local_path": c["local_path"], "duration": c["duration"], "role": c["role"]}
+        for c in clips_found
+    ]
     variables = {
-        "brand":      brand_id,
-        "brand_name": p2["name"],
-        "phone":      p2["phone"],
-        "cta_text":   p2["cta_default"],
-        "duration":   duration,
-        "words":      json.dumps(words),   # stringified — composition parses via JSON.parse
-        "broll_path": broll_path,
-        "audio_path": str(audio_path),
+        "brand":       brand_id,
+        "brand_name":  p2["name"],
+        "phone":       p2["phone"],
+        "cta_text":    p2["cta_default"],
+        "duration":    duration,
+        "words":       json.dumps(words),   # stringified — composition parses via JSON.parse
+        "broll_path":  broll_path,
+        "broll_clips": broll_clips,
+        "audio_path":  str(audio_path),
+        "bg_color":    brand["phase2"]["colors"]["dark"].lstrip("#"),
     }
     logger.info(
         f"  Variables: duration={duration:.1f}s words={len(words)} "
-        f"broll={'yes' if broll_path else 'none'}"
+        f"broll={'yes' if broll_path else 'none'} ({len(broll_clips)} clips)"
     )
     step_times["8_compose_vars"] = 0.0
 

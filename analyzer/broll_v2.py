@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.11
+# Adapted from MoneyPrinterTurbo (MIT) github.com/harry0703/MoneyPrinterTurbo
 """
 broll_v2.py — B-roll fetcher: Pexels → Pixabay fallback chain.
 
@@ -31,6 +32,13 @@ PIXABAY_SEARCH_URL = "https://pixabay.com/api/videos/"
 
 REQUEST_TIMEOUT = 30
 DOWNLOAD_TIMEOUT = 120
+
+# Material quality bar — adapted from MoneyPrinterTurbo's preprocess_video()
+# minimum-resolution check. Clips below this are unusable on a 1080x1920
+# composite (visible upscale blur), so they're filtered before duration
+# selection rather than downloaded and discarded.
+MIN_CLIP_WIDTH = 480
+MIN_CLIP_HEIGHT = 480
 
 logger = logging.getLogger(__name__)
 if not logger.handlers:
@@ -113,8 +121,22 @@ def search_pexels(query: str, target_duration: float) -> dict | None:
             logger.debug(f"  Pexels: no results for '{query}'")
             return None
 
+        # Filter to videos whose best file clears the resolution bar before
+        # duration selection — a high-res clip slightly off-target beats a
+        # blurry clip that's a perfect duration match.
+        candidates = []
+        for video in videos:
+            file_obj = _pexels_best_file(video)
+            if file_obj and _meets_quality_bar(
+                file_obj.get("width"), file_obj.get("height"), video.get("duration", 0)
+            ):
+                candidates.append(video)
+        if not candidates:
+            logger.debug(f"  Pexels: no results ≥ {MIN_CLIP_WIDTH}x{MIN_CLIP_HEIGHT} for '{query}'")
+            return None
+
         # Pick video whose duration is closest to target (prefer ≥ target)
-        best = _pick_best_duration(videos, target_duration, duration_key="duration")
+        best = _pick_best_duration(candidates, target_duration, duration_key="duration")
         if not best:
             return None
 
@@ -175,15 +197,30 @@ def search_pixabay(query: str, target_duration: float) -> dict | None:
         logger.debug(f"  Pixabay: no results for '{query}'")
         return None
 
-    best = _pick_best_duration(hits, target_duration, duration_key="duration")
+    # A hit qualifies if any of its quality variants clears the resolution bar.
+    candidates = [
+        hit for hit in hits
+        if any(
+            _meets_quality_bar(v.get("width"), v.get("height"), hit.get("duration", 0))
+            for v in hit.get("videos", {}).values()
+        )
+    ]
+    if not candidates:
+        logger.debug(f"  Pixabay: no results ≥ {MIN_CLIP_WIDTH}x{MIN_CLIP_HEIGHT} for '{query}'")
+        return None
+
+    best = _pick_best_duration(candidates, target_duration, duration_key="duration")
     if not best:
         return None
 
-    # Prefer medium quality for reasonable file size
+    # Prefer medium quality for reasonable file size, but skip variants
+    # below the resolution bar in favor of the next-best quality tier.
     videos = best.get("videos", {})
     for quality in ("medium", "small", "large", "tiny"):
         vid = videos.get(quality)
-        if vid and vid.get("url"):
+        if vid and vid.get("url") and _meets_quality_bar(
+            vid.get("width"), vid.get("height"), best.get("duration", 0)
+        ):
             return {
                 "url": vid["url"],
                 "duration": best.get("duration", target_duration),
@@ -197,6 +234,23 @@ def search_pixabay(query: str, target_duration: float) -> dict | None:
 
 
 # ── Shared helpers ─────────────────────────────────────────────────────────────
+
+def _meets_quality_bar(width: int, height: int, duration: float) -> bool:
+    """
+    Reject material below the minimum usable resolution or with no duration.
+
+    Adapted from MoneyPrinterTurbo's preprocess_video() material filter
+    (480x480 minimum). Search results are checked here, before download,
+    so low-res hits never reach _pick_best_duration or consume bandwidth.
+    """
+    if duration <= 0:
+        return False
+    if not width or not height:
+        # Some API responses omit dimensions — don't reject on missing data,
+        # only on confirmed sub-480 resolution.
+        return True
+    return width >= MIN_CLIP_WIDTH and height >= MIN_CLIP_HEIGHT
+
 
 def _pick_best_duration(items: list[dict], target: float, duration_key: str) -> dict | None:
     """Return item whose duration is closest to target, preferring ≥ target."""

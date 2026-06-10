@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\".venv/bin/python3.11 analyzer/generate_video.py \\\"Why Mississippi families need home insurance\\\" alpha-insurance 2>&1\",\"timeout\":300000}",
-  "error": "Exit code 1\nTraceback (most recent call last):\n  File \"/Users/smoov/ContentEngine/analyzer/generate_video.py\", line 35, in <module>\n    from analyzer import tts, subtitle_sync, audio_sync, broll_v2, hyperframes_render\nModuleNotFoundError: No module named 'analyzer'",
-  "timestamp": "2026-06-09T00:16:00.241Z",
-  "retry_count": 2
+  "tool_input_preview": "{\"command\":\"python3.11 analyzer/broll_v2.py\",\"description\":\"Run broll_v2 self-test\"}",
+  "error": "Exit code 1\nTraceback (most recent call last):\n  File \"/Users/smoov/ContentEngine/analyzer/broll_v2.py\", line 21, in <module>\n    import requests\nModuleNotFoundError: No module named 'requests'",
+  "timestamp": "2026-06-10T02:03:21.979Z",
+  "retry_count": 1
 }
